@@ -6,8 +6,8 @@
 	"dependencies": {
 		"bformat": "~>1.0.8"
 	},
-	"description": "A minimal D application.",
-	"license": "proprietary",
+	"description": "Tag-based asynchronous messaging framework",
+	"license": "LGPL-3.0",
 	"name": "tristanable",
 	"targetType": "library"
 }
