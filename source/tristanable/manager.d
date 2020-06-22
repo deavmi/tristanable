@@ -3,6 +3,7 @@ module tristanable.manager;
 import tristanable.watcher : Watcher;
 import tristanable.request : Request;
 import std.socket : Socket;
+import core.sync.mutex : Mutex;
 
 /* TODO: Watcher class to watch for stuff, and add to manager's queues */
 /* TODO: maneger class to use commands on, enqueue and wait for dequeue */
@@ -20,12 +21,20 @@ public final class Manager
     */
     private Watcher watcher;
 
+    /**
+    * The list mutex
+    */
+    private Mutex queueMutex;
+
     this(Socket endpoint)
     {
         /* TODO: Create the watcher */
         watcher = new Watcher(this, endpoint);
 
         /* TODO: Other initializations (queues etc.) */
+
+        /* Initialize the `requestQueue` mutex */
+        queueMutex = new Mutex();
 
         /* Start the watcher */
         watcher.start();
@@ -34,6 +43,17 @@ public final class Manager
     public void sendMessage(ulong tag, byte[] data)
     {
         /* TODO: Implement me */
+
+        /* Construct the message array */
+        byte[] messageData;
+
+        /* Send the message */
+
+        /* Create a new Request */
+        Request newRequest = new Request(tag);
+
+        /* Add the request to the request queue */
+        enqueue(newRequest);
     }
 
     public byte[] receiveMessage(ulong tag)
@@ -48,6 +68,6 @@ public final class Manager
 
     public void enqueue(Request request)
     {
-        
+
     }
 }
