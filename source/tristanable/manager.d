@@ -1,6 +1,7 @@
 module tristanable.manager;
 
 import tristanable.watcher : Watcher;
+import tristanable.request : Request;
 import std.socket : Socket;
 
 /* TODO: Watcher class to watch for stuff, and add to manager's queues */
@@ -8,6 +9,11 @@ import std.socket : Socket;
 public final class Manager
 {
     /* TODO: Insert queues here */
+
+    /**
+    * The queue of outstanding requests
+    */
+    private Request[] requestQueue;
 
     /**
     * The associated Watcher object for this manager.
@@ -23,5 +29,25 @@ public final class Manager
 
         /* Start the watcher */
         watcher.start();
+    }
+
+    public void sendMessage(ulong tag, byte[] data)
+    {
+        /* TODO: Implement me */
+    }
+
+    public byte[] receiveMessage(ulong tag)
+    {
+        /* TODO: Implement me */
+    }
+
+    public Request[] getQueue()
+    {
+
+    }
+
+    public void enqueue(Request request)
+    {
+        
     }
 }
