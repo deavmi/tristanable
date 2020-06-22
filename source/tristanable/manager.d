@@ -70,7 +70,6 @@ public final class Manager
         /* Send the message */
         bSendMessage(socket, messageData);
 
-
         /* Create a new Request */
         Request newRequest = new Request(tag);
 
@@ -78,10 +77,53 @@ public final class Manager
         enqueue(newRequest);
     }
 
+    public bool isValidTag(ulong tag)
+    {
+        for(ulong i = 0; i < requestQueue.length; i++)
+        {
+            if(requestQueue[i].tag == tag)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ulong getTagPosition(ulong tag)
+    {
+        for(ulong i = 0; i < requestQueue.length; i++)
+        {
+            if(requestQueue[i].tag == tag)
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+
     public byte[] receiveMessage(ulong tag)
     {
-        /* TODO: Implement me */
-        return [];
+        /* The received data */
+        byte[] receivedData;
+
+        /* Loop till fulfilled */
+        while(true)
+        {
+            /* Lock the queue for reading */
+            lockQueue();
+
+            /* Check if the request has been fulfilled */
+            if(requestQueue[getTagPosition(tag)].isFulfilled())
+            {
+                receivedData = requestQueue[getTagPosition(tag)].dataReceived;
+                break;
+            }
+
+            /* Unlock the queue */
+            unlockQueue();
+        }
+
+        return receivedData;
     }
 
     public Request[] getQueue()
@@ -93,5 +135,15 @@ public final class Manager
     public void enqueue(Request request)
     {
         /* TODO: Implement me */
+    }
+
+    public void lockQueue()
+    {
+        queueMutex.lock();
+    }
+
+    public void unlockQueue()
+    {
+        queueMutex.unlock();
     }
 }

@@ -12,7 +12,7 @@ public final class Request
     /**
     * The data received
     */
-    private byte[] dataReceived;
+    public byte[] dataReceived;
 
     /**
     * Whether or not this request has been
@@ -30,10 +30,13 @@ public final class Request
         this.tag = tag;
     }
 
+    public void fulfill(byte[] data)
+    {
+        dataReceived = data;
+    }
 
     public bool isFulfilled()
     {
-        /* TODO: Implement me */
-        return true;
+        return fulfilled;
     }
 }
