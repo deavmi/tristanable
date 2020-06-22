@@ -73,8 +73,14 @@ public final class Manager
         /* Create a new Request */
         Request newRequest = new Request(tag);
 
+        /* Lock the queue for reading */
+        lockQueue();
+
         /* Add the request to the request queue */
-        enqueue(newRequest);
+        requestQueue ~= newRequest;
+
+        /* Unlock the queue */
+        unlockQueue();
     }
 
     public bool isValidTag(ulong tag)
@@ -128,8 +134,7 @@ public final class Manager
 
     public Request[] getQueue()
     {
-        /* TODO: Implement me */
-        return [];
+        return requestQueue;
     }
 
     public void enqueue(Request request)
