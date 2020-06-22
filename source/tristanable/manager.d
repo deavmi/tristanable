@@ -27,8 +27,16 @@ public final class Manager
     */
     private Mutex queueMutex;
 
+    /**
+    * The remote host
+    */
+    private Socket socket;
+
     this(Socket endpoint)
     {
+        /* Set the socket */
+        socket = endpoint;
+        
         /* TODO: Create the watcher */
         watcher = new Watcher(this, endpoint);
 
