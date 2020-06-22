@@ -36,7 +36,7 @@ public final class Manager
     {
         /* Set the socket */
         socket = endpoint;
-        
+
         /* TODO: Create the watcher */
         watcher = new Watcher(this, endpoint);
 
@@ -51,10 +51,21 @@ public final class Manager
 
     public void sendMessage(ulong tag, byte[] data)
     {
-        /* TODO: Implement me */
-
         /* Construct the message array */
         byte[] messageData;
+
+        /* Add the `tag` bytes */
+        messageData ~= *(cast(byte*)&tag);
+        messageData ~= *(cast(byte*)&tag+1);
+        messageData ~= *(cast(byte*)&tag+2);
+        messageData ~= *(cast(byte*)&tag+3);
+        messageData ~= *(cast(byte*)&tag+4);
+        messageData ~= *(cast(byte*)&tag+5);
+        messageData ~= *(cast(byte*)&tag+6);
+        messageData ~= *(cast(byte*)&tag+7);
+        
+        /* Add the `data` bytes (the actual message) */
+        messageData ~= data;
 
         /* Send the message */
         bSendMessage(endpoint, messageData);
