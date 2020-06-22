@@ -4,7 +4,7 @@ import tristanable.watcher : Watcher;
 import tristanable.request : Request;
 import std.socket : Socket;
 import core.sync.mutex : Mutex;
-import bmessage : sendMessage;
+import bmessage : bSendMessage = sendMessage;
 
 /* TODO: Watcher class to watch for stuff, and add to manager's queues */
 /* TODO: maneger class to use commands on, enqueue and wait for dequeue */
@@ -49,6 +49,7 @@ public final class Manager
         byte[] messageData;
 
         /* Send the message */
+        bSendMessage(endpoint, messageData);
 
 
         /* Create a new Request */
