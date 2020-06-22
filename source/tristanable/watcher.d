@@ -22,7 +22,16 @@ public final class Watcher : Thread
 
     this(Manager manager, Socket endpoint)
     {
+        super(&watchLoop);
         this.manager = manager;
         this.endpoint = endpoint;
+    }
+
+    private void watchLoop()
+    {
+        while(true)
+        {
+            /* TODO: Loop here */
+        }
     }
 }

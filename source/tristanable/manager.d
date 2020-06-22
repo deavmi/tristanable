@@ -18,5 +18,10 @@ public final class Manager
     {
         /* TODO: Create the watcher */
         watcher = new Watcher(this, endpoint);
+
+        /* TODO: Other initializations (queues etc.) */
+
+        /* Start the watcher */
+        watcher.start();
     }
 }
