@@ -81,15 +81,17 @@ public final class Manager
     public byte[] receiveMessage(ulong tag)
     {
         /* TODO: Implement me */
+        return [];
     }
 
     public Request[] getQueue()
     {
-
+        /* TODO: Implement me */
+        return [];
     }
 
     public void enqueue(Request request)
     {
-
+        /* TODO: Implement me */
     }
 }

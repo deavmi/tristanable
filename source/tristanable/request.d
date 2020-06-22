@@ -34,5 +34,6 @@ public final class Request
     public bool isFulfilled()
     {
         /* TODO: Implement me */
+        return true;
     }
 }
