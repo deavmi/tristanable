@@ -68,7 +68,7 @@ public final class Manager
         messageData ~= data;
 
         /* Send the message */
-        bSendMessage(endpoint, messageData);
+        bSendMessage(socket, messageData);
 
 
         /* Create a new Request */
