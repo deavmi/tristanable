@@ -121,13 +121,25 @@ public final class Manager
             /* Lock the queue for reading */
             lockQueue();
 
-            /* Check if the request has been fulfilled */
-            if(requestQueue[getTagPosition(tag)].isFulfilled())
+            /* Throw an exception if it doesn't exist */
+            if(!isValidTag(tag))
             {
-                receivedData = requestQueue[getTagPosition(tag)].dataReceived;
+                /* TODO: Throw exception here */
+
+                /* Unlock the queue */
+                unlockQueue();
+            }
+
+            /* Get the request */
+            Request request = requestQueue[getTagPosition(tag)];
+
+            /* Check if the request has been fulfilled */
+            if(request.isFulfilled())
+            {
+                receivedData = request.dataReceived;
 
                 /* TODO: Set the request to dead now */
-                requestQueue[getTagPosition(tag)].isDead = true;
+                request.isDead = true;
 
                 active = false;
             }
