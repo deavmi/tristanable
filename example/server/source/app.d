@@ -2,6 +2,7 @@ import std.stdio;
 import std.socket;
 import tristanable.encoding : DataMessage;
 import bmessage;
+import core.thread;
 
 void main()
 {
@@ -26,6 +27,7 @@ void main()
 		sendMessage(conn, d.encode());
 
 		d = new DataMessage(69, [1]);
+		Thread.sleep(dur!("seconds")(5));
 		sendMessage(conn, d.encode());
 	}
 	
