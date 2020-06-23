@@ -9,5 +9,6 @@
 	"description": "Tag-based asynchronous messaging framework",
 	"license": "LGPL-3.0",
 	"name": "tristanable",
-	"targetType": "library"
+	"targetType": "library",
+	"sourcePaths": ["source/tristanable"]
 }

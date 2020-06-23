@@ -31,6 +31,7 @@ public final class GarbageCollector : Thread
         requestQueueVariable = cast(Request[]*)manager.getQueueVariable();
     }
 
+    /* TODO: Add timeout ability */
     private void cleaner()
     {
         while(true)
@@ -38,7 +39,6 @@ public final class GarbageCollector : Thread
             /* Lock the queue */
             manager.lockQueue();
 
-            /* TODO: Add clean up here */
             /* Construct a new list */
             Request[] newList;
 
