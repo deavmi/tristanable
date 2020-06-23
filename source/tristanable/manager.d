@@ -57,7 +57,7 @@ public final class Manager
         watcher.start();
 
         /* Start the garbage collector */
-        //gc.start();
+        gc.start();
     }
 
     public void sendMessage(ulong tag, byte[] data)
