@@ -10,8 +10,19 @@ void main()
 	Manager manager = new Manager(socket);
 
 	manager.sendMessage(69, [77]);
+	manager.sendMessage(70, [78]);
 
 
 	byte[] receivedKaka = manager.receiveMessage(69);
 	writeln(receivedKaka);
+
+	receivedKaka = manager.receiveMessage(70);
+	writeln(receivedKaka);
+
+	receivedKaka = manager.receiveMessage(70);
+	writeln(receivedKaka);
+
+	
+
+	
 }

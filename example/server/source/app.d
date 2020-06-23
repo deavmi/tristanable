@@ -22,8 +22,10 @@ void main()
 		writeln("Tag: ", message.tag);
 		writeln("Data: ", message.data);
 
-		DataMessage d = new DataMessage(69, [1]);
+		DataMessage d = new DataMessage(70, [2]);
+		sendMessage(conn, d.encode());
 
+		d = new DataMessage(69, [1]);
 		sendMessage(conn, d.encode());
 	}
 	
