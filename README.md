@@ -22,6 +22,14 @@ manager.sendMessage(2, [6,7,8,9,0]);
 
 Now we can start two seperate threads and wait on them both:
 
+```d
+byte[] receivedData = manager.receiveMessage(1);
+```
+
+```d
+byte[] receivedData = manager.receiveMessage(2);
+```
+
 **TODO**
 
 ## Format
