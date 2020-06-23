@@ -88,7 +88,15 @@ public final class Manager
     {
         for(ulong i = 0; i < requestQueue.length; i++)
         {
-            if(requestQueue[i].tag == tag)
+            /* Get the request */
+            Request request = requestQueue[i];
+
+            /**
+            * Only if the tag is found then return true
+            * and if it is the fresh tagged request (not
+            * ones that are dead using the) same tag.
+            */
+            if(request.isDead == false && request.tag == tag)
             {
                 return true;
             }
@@ -100,7 +108,16 @@ public final class Manager
     {
         for(ulong i = 0; i < requestQueue.length; i++)
         {
-            if(requestQueue[i].tag == tag)
+            /* Get the request */
+            Request request = requestQueue[i];
+
+            /**
+            * Only if the tag is found then return its
+            * posistion and if it is the fresh tagged
+            * request (not ones that are dead using the)
+            * same tag.
+            */
+            if(request.isDead == false && request.tag == tag)
             {
                 return i;
             }
