@@ -39,6 +39,20 @@ public final class GarbageCollector : Thread
             manager.lockQueue();
 
             /* TODO: Add clean up here */
+            /* Construct a new list */
+            Request[] newList;
+
+            /* Only add to this list unfulfilled requests */
+            foreach(Request request; *requestQueueVariable)
+            {
+                if(!request.isFulfilled())
+                {
+                    newList ~= request;
+                }
+            }
+
+            /* Update the queue to the new queue */
+            *requestQueueVariable = newList;
 
             /* Unlock the queue */
             manager.unlockQueue();
