@@ -48,7 +48,7 @@ public final class Manager
         watcher = new Watcher(this, endpoint);
 
         /* Create the garbage collector */
-        //gc = new GarbageCollector(this);
+        gc = new GarbageCollector(this);
 
         /* Initialize the `requestQueue` mutex */
         queueMutex = new Mutex();
@@ -140,9 +140,9 @@ public final class Manager
         return requestQueue;
     }
 
-    public ref Request[] getQueueVariable()
+    public Request[]* getQueueVariable()
     {
-        return requestQueue;
+        return &requestQueue;
     }
 
     public void lockQueue()
