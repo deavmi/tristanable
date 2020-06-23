@@ -22,6 +22,12 @@ void main()
 	receivedKaka = manager.receiveMessage(70);
 	writeln(receivedKaka);
 
+
+	while(true)
+	{
+		writeln(manager.getQueue());
+	}
+	
 	
 
 	
