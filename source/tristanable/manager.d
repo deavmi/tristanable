@@ -113,8 +113,10 @@ public final class Manager
         /* The received data */
         byte[] receivedData;
 
+        bool active = true;
+
         /* Loop till fulfilled */
-        while(true)
+        while(active)
         {
             /* Lock the queue for reading */
             lockQueue();
@@ -125,7 +127,9 @@ public final class Manager
                 receivedData = requestQueue[getTagPosition(tag)].dataReceived;
 
                 /* TODO: Set the request to dead now */
-                break;
+                requestQueue[getTagPosition(tag)].isDead = true;
+
+                active = false;
             }
 
             /* Unlock the queue */
