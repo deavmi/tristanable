@@ -141,10 +141,11 @@ public final class Manager
             /* Throw an exception if it doesn't exist */
             if(!isValidTag(tag))
             {
-                /* TODO: Throw exception here */
-
                 /* Unlock the queue */
                 unlockQueue();
+
+                /* Throw exception here */
+                throw new TristanFokop("Invalid tag");
             }
 
             /* Get the request */
@@ -186,5 +187,13 @@ public final class Manager
     public void unlockQueue()
     {
         queueMutex.unlock();
+    }
+}
+
+public final class TristanFokop : Exception
+{
+    this(string message)
+    {
+        super(message);
     }
 }
