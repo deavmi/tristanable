@@ -2,6 +2,7 @@ module tristanable.manager;
 
 import tristanable.watcher : Watcher;
 import tristanable.request : Request;
+import tristanable.garbage : GarbageCollector;
 import std.socket : Socket;
 import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;
@@ -32,6 +33,11 @@ public final class Manager
     */
     private Socket socket;
 
+    /**
+    * The garbage collector
+    */
+    private GarbageCollector gc;
+
     this(Socket endpoint)
     {
         /* Set the socket */
@@ -40,11 +46,17 @@ public final class Manager
         /* Create the watcher */
         watcher = new Watcher(this, endpoint);
 
+        /* Create the garbage collector */
+        gc = new GarbageCollector(this);
+
         /* Initialize the `requestQueue` mutex */
         queueMutex = new Mutex();
 
         /* Start the watcher */
         watcher.start();
+
+        /* Start the garbage collector */
+        gc.start();
     }
 
     public void sendMessage(ulong tag, byte[] data)
@@ -131,6 +143,11 @@ public final class Manager
     }
 
     public Request[] getQueue()
+    {
+        return requestQueue;
+    }
+
+    public ref Request[] getQueueVariable()
     {
         return requestQueue;
     }
