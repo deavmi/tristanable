@@ -1,3 +1,5 @@
+![](https://code.dlang.org/packages/tristanable/logo?s=5ef1c9f1250f57dd4c37efbf)
+
 tristanable
 ===========
 
