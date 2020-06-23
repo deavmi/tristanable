@@ -37,10 +37,8 @@ public final class Manager
         /* Set the socket */
         socket = endpoint;
 
-        /* TODO: Create the watcher */
+        /* Create the watcher */
         watcher = new Watcher(this, endpoint);
-
-        /* TODO: Other initializations (queues etc.) */
 
         /* Initialize the `requestQueue` mutex */
         queueMutex = new Mutex();
