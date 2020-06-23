@@ -21,6 +21,11 @@ public final class Request
     private bool fulfilled;
 
     /**
+    * Whether 
+    */
+    public bool isDead;
+
+    /**
     * The tag for this request
     */
     public ulong tag;

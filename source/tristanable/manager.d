@@ -123,6 +123,8 @@ public final class Manager
             if(requestQueue[getTagPosition(tag)].isFulfilled())
             {
                 receivedData = requestQueue[getTagPosition(tag)].dataReceived;
+
+                /* TODO: Set the request to dead now */
                 break;
             }
 
