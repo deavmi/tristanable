@@ -137,11 +137,6 @@ public final class Manager
         return requestQueue;
     }
 
-    public void enqueue(Request request)
-    {
-        /* TODO: Implement me */
-    }
-
     public void lockQueue()
     {
         queueMutex.lock();
