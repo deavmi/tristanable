@@ -42,10 +42,10 @@ public final class GarbageCollector : Thread
             /* Construct a new list */
             Request[] newList;
 
-            /* Only add to this list unfulfilled requests */
+            /* Only add to this list undead requests */
             foreach(Request request; *requestQueueVariable)
             {
-                if(!request.isFulfilled())
+                if(!request.isDead)
                 {
                     newList ~= request;
                 }
