@@ -33,6 +33,7 @@ public final class Request
     public void fulfill(byte[] data)
     {
         dataReceived = data;
+        fulfilled = true;
     }
 
     public bool isFulfilled()
