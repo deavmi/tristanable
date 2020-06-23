@@ -19,6 +19,8 @@ void main()
 	receivedKaka = manager.receiveMessage(70);
 	writeln(receivedKaka);
 
+	manager.sendMessage(70, [78]);
+
 	receivedKaka = manager.receiveMessage(70);
 	writeln(receivedKaka);
 
@@ -26,6 +28,9 @@ void main()
 	while(true)
 	{
 		writeln(manager.getQueue());
+		import core.thread;
+
+		Thread.sleep(dur!("seconds")(10));
 	}
 	
 	
