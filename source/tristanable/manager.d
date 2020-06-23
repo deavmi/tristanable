@@ -3,6 +3,7 @@ module tristanable.manager;
 import tristanable.watcher : Watcher;
 import tristanable.request : Request;
 import tristanable.garbage : GarbageCollector;
+import tristanable.encoding : DataMessage;
 import std.socket : Socket;
 import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;

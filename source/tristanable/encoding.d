@@ -1,3 +1,5 @@
+module tristanable.encoding;
+
 public final class DataMessage
 {
 
@@ -10,7 +12,7 @@ public final class DataMessage
         ulong receivedTag = *(cast(ulong*)bytes.ptr);
 
         /* Fetch the `data` */
-        byte[] receivedData = receivedMessage = bytes[8..bytes.length];
+        byte[] receivedData = bytes[8..bytes.length];
 
         return new DataMessage(receivedTag, receivedData);
     }
