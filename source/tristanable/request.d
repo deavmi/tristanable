@@ -50,6 +50,18 @@ public final class Request
 
     override public string toString()
     {
-        return "Request (Tag: " ~ to!(string)(tag) ~ ", Arrived: " ~ to!(string)(fulfilled) ~ ", Used: " ~ to!(string)(isDead);
+        /* the toString string */
+        string toStringString;
+
+        /* Add the Request tag info */
+        toStringString ~= "Request (Tag: " ~ to!(string)(tag);
+
+        /* Add the Request arrival  status */
+        toStringString ~= ", Arrived: " ~ to!(string)(fulfilled);
+
+        /* Add the IsDead tag info */
+        toStringString ~= ", Used: " ~ to!(string)(isDead) ~  ")";
+
+        return toStringString;
     }
 }
