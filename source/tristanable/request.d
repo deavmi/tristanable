@@ -1,5 +1,7 @@
 module tristanable.request;
 
+import std.conv : to;
+
 /**
 * Request
 *
@@ -44,5 +46,10 @@ public final class Request
     public bool isFulfilled()
     {
         return fulfilled;
+    }
+
+    override public string toString()
+    {
+        return "Request (Tag: " ~ to!(string)(tag) ~ ", Arrived: " ~ to!(string)(fulfilled) ~ ", Used: " ~ to!(string)(isDead);
     }
 }
