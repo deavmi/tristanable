@@ -52,7 +52,7 @@ public final class Watcher : Thread
             receivedTag = *(cast(ulong*)receivedPayload.ptr);
 
             /* Fetch the `data` */
-            receivedMessage = receivedPayload[8..receivedMessage.length];
+            receivedMessage = receivedPayload[8..receivedPayload.length];
 
             /* Lock the queue for reading */
             manager.lockQueue();
