@@ -62,21 +62,11 @@ public final class Manager
 
     public void sendMessage(ulong tag, byte[] data)
     {
-        /* Construct the message array */
-        byte[] messageData;
+        /* Encode the message */
+        DataMessage dataMessage = new DataMessage(tag, data);
 
-        /* Add the `tag` bytes */
-        messageData ~= *(cast(byte*)&tag);
-        messageData ~= *(cast(byte*)&tag+1);
-        messageData ~= *(cast(byte*)&tag+2);
-        messageData ~= *(cast(byte*)&tag+3);
-        messageData ~= *(cast(byte*)&tag+4);
-        messageData ~= *(cast(byte*)&tag+5);
-        messageData ~= *(cast(byte*)&tag+6);
-        messageData ~= *(cast(byte*)&tag+7);
-        
-        /* Add the `data` bytes (the actual message) */
-        messageData ~= data;
+        /* Construct the message array */
+        byte[] messageData = dataMessage.encode();
 
         /* Send the message */
         bSendMessage(socket, messageData);
