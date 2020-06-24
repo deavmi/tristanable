@@ -22,16 +22,27 @@ public final class Watcher : Thread
     */
     private Socket endpoint;
 
+    /**
+    * Whether or not the watcher is active
+    */
+    private bool isActive;
+
     this(Manager manager, Socket endpoint)
     {
         super(&watchLoop);
         this.manager = manager;
         this.endpoint = endpoint;
+        isActive = true;
+    }
+
+    public void stopWatcher()
+    {
+        isActive = false;
     }
 
     private void watchLoop()
     {
-        while(true)
+        while(isActive)
         {
             /* The received message (tag+data) */
             byte[] receivedPayload;

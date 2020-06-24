@@ -60,6 +60,24 @@ public final class Manager
         gc.start();
     }
 
+    public void stopManager()
+    {
+        /* Will caue watcher to not block */
+        socket.close();
+
+        /* Stop watcher */
+        watcher.stopWatcher();
+
+        /* Stop gc */
+        gc.stopGC();
+
+        /* Wait for watcher thread to stop */
+        watcher.join();
+
+        /* Wait for garbage collector thread to stop */
+        gc.join();
+    }
+
     public void sendMessage(ulong tag, byte[] data)
     {
         /* Encode the message */

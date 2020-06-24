@@ -19,6 +19,11 @@ public final class GarbageCollector : Thread
     */
     private Request[]* requestQueueVariable;
 
+    /**
+    * Whether or not the watcher is active
+    */
+    private bool isActive;
+
     this(Manager manager)
     {
         /* Set the worker function */
@@ -29,12 +34,19 @@ public final class GarbageCollector : Thread
 
         /* Set the pointer */
         requestQueueVariable = cast(Request[]*)manager.getQueueVariable();
+
+        isActive = true;
+    }
+
+    public void stopGC()
+    {
+        isActive = false;
     }
 
     /* TODO: Add timeout ability */
     private void cleaner()
     {
-        while(true)
+        while(isActive)
         {
             /* Lock the queue */
             manager.lockQueue();
