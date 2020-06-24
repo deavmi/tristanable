@@ -17,6 +17,10 @@ public final class DataMessage
         return new DataMessage(receivedTag, receivedData);
     }
 
+    /**
+    * Creates a new DataMessage tagged by `tag`
+    * with the bytes specified by `data`
+    */
     this(ulong tag, byte[] data)
     {
         this.tag = tag;
