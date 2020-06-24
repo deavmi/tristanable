@@ -154,10 +154,8 @@ public final class Manager
             /* Check if the request has been fulfilled */
             if(request.isFulfilled())
             {
-                receivedData = request.dataReceived;
+                receivedData = request.pullData();
 
-                /* TODO: Set the request to dead now */
-                request.isDead = true;
 
                 active = false;
             }

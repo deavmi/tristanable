@@ -23,7 +23,7 @@ public final class Request
     private bool fulfilled;
 
     /**
-    * Whether 
+    * Whether the request has been depleted
     */
     public bool isDead;
 
@@ -32,6 +32,10 @@ public final class Request
     */
     public ulong tag;
 
+    /**
+    * Make a new Request with the provided tag
+    * `tag`.
+    */
     this(ulong tag)
     {
         this.tag = tag;
@@ -46,6 +50,12 @@ public final class Request
     public bool isFulfilled()
     {
         return fulfilled;
+    }
+
+    public byte[] pullData()
+    {
+        isDead = true;
+        return dataReceived;
     }
 
     override public string toString()
