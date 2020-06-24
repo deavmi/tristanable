@@ -124,10 +124,13 @@ public final class Manager
 
     public ulong getTagPosition(ulong tag)
     {
+        /* The found request (if any) */
+        Request request;
+
         for(ulong i = 0; i < requestQueue.length; i++)
         {
             /* Get the request */
-            Request request = requestQueue[i];
+            request = requestQueue[i];
 
             /**
             * Only if the tag is found then return its
@@ -173,8 +176,6 @@ public final class Manager
             if(request.isFulfilled())
             {
                 receivedData = request.pullData();
-
-
                 active = false;
             }
 
