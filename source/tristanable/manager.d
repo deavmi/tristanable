@@ -41,6 +41,11 @@ public final class Manager
     private Mutex queueMutex;
 
     /**
+    * The notification queue mutex
+    */
+    private Mutex notificationMutex;
+
+    /**
     * The remote host
     */
     private Socket socket;
@@ -63,6 +68,9 @@ public final class Manager
 
         /* Initialize the `requestQueue` mutex */
         queueMutex = new Mutex();
+
+        /* Initialize the `notificationQueue` mutex */
+        notificationMutex = new Mutex();
 
         /* Start the watcher */
         watcher.start();
@@ -214,6 +222,36 @@ public final class Manager
     public void unlockQueue()
     {
         queueMutex.unlock();
+    }
+
+    public void lockNotificationQueue()
+    {
+        notificationMutex.lock();
+    }
+
+    public void unlockNotificationQueue()
+    {
+        notificationMutex.unlock();
+    }
+
+    public NotificationReply[] popNotifications()
+    {
+    	/* The notifications at this moment */
+    	NotificationReply[] currentNotificationSet;
+    	
+    	/* Lock the notification queue */
+    	lockNotificationQueue();
+
+		/* Copy the current notifications */
+		currentNotificationSet = notificationQueue;
+
+    	/* Empty the notification list */
+    	notificationQueue.length = 0;
+
+    	/* Unlock the notification queue */
+    	unlockNotificationQueue();
+
+    	return currentNotificationSet;
     }
 
 	public void reserveTag(ulong tag)

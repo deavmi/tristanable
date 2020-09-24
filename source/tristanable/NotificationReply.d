@@ -18,5 +18,22 @@ module tristanable.notifications;
 
 public class NotificationReply
 {
-	
+	private ulong tag;
+	private byte[] data;
+
+	this(ulong tag, byte[] data)
+	{
+		this.tag = tag;
+		this.data = data;
+	}
+
+	public byte[] getData()
+	{
+		return data;
+	}
+
+	public ulong getTag()
+	{
+		return tag;
+	}
 }
