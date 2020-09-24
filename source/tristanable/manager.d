@@ -4,6 +4,7 @@ import tristanable.watcher : Watcher;
 import tristanable.request : Request;
 import tristanable.garbage : GarbageCollector;
 import tristanable.encoding : DataMessage;
+import tristanable.notifications : NotificationReply;
 import std.socket : Socket;
 import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;
@@ -18,6 +19,16 @@ public final class Manager
     * The queue of outstanding requests
     */
     private Request[] requestQueue;
+
+    /**
+    * Reserved tags
+    */
+    private ulong[] reservedTags;
+
+    /**
+    * The queue of received notifications
+    */
+    private NotificationReply[] notificationQueue;
 
     /**
     * The associated Watcher object for this manager.
@@ -204,6 +215,25 @@ public final class Manager
     {
         queueMutex.unlock();
     }
+
+	public void reserveTag(ulong tag)
+	{
+		reservedTags ~= tag;
+	}
+
+	public bool isReservedTag(ulong tag)
+	{
+		foreach(ulong currentTag; reservedTags)
+		{
+			if(currentTag == tag)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+    
 }
 
 public final class TristanFokop : Exception
