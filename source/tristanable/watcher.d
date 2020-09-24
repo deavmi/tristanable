@@ -76,19 +76,26 @@ public final class Watcher : Thread
             ulong requestPosition = manager.getTagPosition(receivedTag);
 
             
-
+			/**
+			* Check if the tag was found
+			*
+			* This only accounts for tags requested
+			*/
             if(foundTag)
             {
-                
-
                 /* Fulfill the request */
                 currentQueue[requestPosition].fulfill(receivedMessage);
-
-                
+            }
+            /**
+            * Check if the tag was reservd
+            */
+            else if(manager.isReservedTag(receivedTag))
+            {
+            	/* TODO: Implement me */
             }
             else
             {
-
+				/* TODO: */
             }
 
             /* Unlock the queue */
