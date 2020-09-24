@@ -2,6 +2,7 @@ module tristanable.watcher;
 
 import tristanable.manager : Manager;
 import tristanable.request : Request;
+import tristanable.notifications : NotificationReply;
 import std.socket : Socket;
 import core.thread : Thread;
 import bmessage : receiveMessage;
@@ -91,7 +92,14 @@ public final class Watcher : Thread
             */
             else if(manager.isReservedTag(receivedTag))
             {
-            	/* TODO: Implement me */
+            	/* Lock the notification queue */
+            	manager.lockNotificationQueue();
+
+				/* Create the NotificationReply */
+				NotificationReply notifyReply = new NotificationReply(receivedTag, receivedMessage);
+
+            	/* Unlock the notification queue */
+            	manager.unlockNotificationQueue();
             }
             else
             {
