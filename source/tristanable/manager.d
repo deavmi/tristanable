@@ -271,6 +271,18 @@ public final class Manager
 
 		return false;
 	}
+
+	public void addNotification(NotificationReply notificationReply)
+	{
+		/* Lock the notification queue */
+    	lockNotificationQueue();
+
+		/* Append the notification */
+		notificationQueue ~= notificationReply;
+		
+    	/* Unlock the notification queue */
+    	unlockNotificationQueue();
+	}
     
 }
 

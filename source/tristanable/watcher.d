@@ -92,14 +92,11 @@ public final class Watcher : Thread
             */
             else if(manager.isReservedTag(receivedTag))
             {
-            	/* Lock the notification queue */
-            	manager.lockNotificationQueue();
-
 				/* Create the NotificationReply */
 				NotificationReply notifyReply = new NotificationReply(receivedTag, receivedMessage);
 
-            	/* Unlock the notification queue */
-            	manager.unlockNotificationQueue();
+				/* Add the notification */
+				manager.addNotification(notifyReply);
             }
             else
             {
