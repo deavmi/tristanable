@@ -105,10 +105,7 @@ public final class Manager
         /* Construct the message array */
         byte[] messageData = dataMessage.encode();
 
-        /* Send the message */
-        bSendMessage(socket, messageData);
-
-        /* Create a new Request */
+		/* Create a new Request */
         Request newRequest = new Request(tag);
 
         /* Lock the queue for reading */
@@ -119,6 +116,9 @@ public final class Manager
 
         /* Unlock the queue */
         unlockQueue();
+
+        /* Send the message */
+        bSendMessage(socket, messageData);
     }
 
     public bool isValidTag(ulong tag)
