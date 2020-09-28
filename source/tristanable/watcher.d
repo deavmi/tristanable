@@ -58,53 +58,59 @@ public final class Watcher : Thread
             /* Receive a message */
             bool recvStatus = receiveMessage(endpoint, receivedPayload);
 
-            /* TODO: Status check */
+			/* Only continue if the receive was a success */
+			if(recvStatus)
+			{
+	            /* Fetch the `tag` */
+	            receivedTag = *(cast(ulong*)receivedPayload.ptr);
 
-            /* Fetch the `tag` */
-            receivedTag = *(cast(ulong*)receivedPayload.ptr);
+	            /* Fetch the `data` */
+	            receivedMessage = receivedPayload[8..receivedPayload.length];
 
-            /* Fetch the `data` */
-            receivedMessage = receivedPayload[8..receivedPayload.length];
+	            /* Lock the queue for reading */
+	            manager.lockQueue();
 
-            /* Lock the queue for reading */
-            manager.lockQueue();
+	            /* Get the queue */
+	            Request[] currentQueue = manager.getQueue();
 
-            /* Get the queue */
-            Request[] currentQueue = manager.getQueue();
+	            /* Check to see if this is a tag we are awaiting */
+	            bool foundTag = manager.isValidTag(receivedTag);
+	            ulong requestPosition = manager.getTagPosition(receivedTag);
 
-            /* Check to see if this is a tag we are awaiting */
-            bool foundTag = manager.isValidTag(receivedTag);
-            ulong requestPosition = manager.getTagPosition(receivedTag);
+	            
+				/**
+				* Check if the tag was found
+				*
+				* This only accounts for tags requested
+				*/
+	            if(foundTag)
+	            {
+	                /* Fulfill the request */
+	                currentQueue[requestPosition].fulfill(receivedMessage);
+	            }
+	            /**
+	            * Check if the tag was reservd
+	            */
+	            else if(manager.isReservedTag(receivedTag))
+	            {
+					/* Create the NotificationReply */
+					NotificationReply notifyReply = new NotificationReply(receivedTag, receivedMessage);
 
-            
-			/**
-			* Check if the tag was found
-			*
-			* This only accounts for tags requested
-			*/
-            if(foundTag)
-            {
-                /* Fulfill the request */
-                currentQueue[requestPosition].fulfill(receivedMessage);
-            }
-            /**
-            * Check if the tag was reservd
-            */
-            else if(manager.isReservedTag(receivedTag))
-            {
-				/* Create the NotificationReply */
-				NotificationReply notifyReply = new NotificationReply(receivedTag, receivedMessage);
+					/* Add the notification */
+					manager.addNotification(notifyReply);
+	            }
+	            else
+	            {
+					/* TODO: */
+	            }
 
-				/* Add the notification */
-				manager.addNotification(notifyReply);
-            }
-            else
-            {
-				/* TODO: */
-            }
-
-            /* Unlock the queue */
-            manager.unlockQueue();
+	            /* Unlock the queue */
+	            manager.unlockQueue();
+	        }
+	        else
+	        {
+	        	/* TODO: Add error handling */
+	        }
         }
     }
 }
