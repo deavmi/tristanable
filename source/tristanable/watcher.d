@@ -74,6 +74,8 @@ public final class Watcher : Thread
 
             /* Check to see if this is a tag we are awaiting */
             bool foundTag = manager.isValidTag(receivedTag);
+
+            /* TODO: No, this should fail then , so it shoudln't be here (if not valid tag) */
             ulong requestPosition = manager.getTagPosition(receivedTag);
 
             
