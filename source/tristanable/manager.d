@@ -46,6 +46,11 @@ public final class Manager
     private Mutex notificationMutex;
 
     /**
+    * The reserved tags mutex
+    */
+    private Mutex reservedTagsMutex;
+
+    /**
     * The remote host
     */
     private Socket socket;
@@ -71,6 +76,9 @@ public final class Manager
 
         /* Initialize the `notificationQueue` mutex */
         notificationMutex = new Mutex();
+
+        /* Initialize the `reservedTags` mutex */
+        reservedTagsMutex = new Mutex();
 
         /* Start the watcher */
         watcher.start();
@@ -256,20 +264,36 @@ public final class Manager
 
 	public void reserveTag(ulong tag)
 	{
+		/* Lock the reservedTags mutex */
+		reservedTagsMutex.lock();
+
+		/* Add the reserved tag */
 		reservedTags ~= tag;
+
+		/* Unlock the reservedTags mutex */
+		reservedTagsMutex.unlock();
 	}
 
 	public bool isReservedTag(ulong tag)
 	{
+		/* Lock the reservedTags mutex */
+		reservedTagsMutex.lock();
+
+		bool found;
+
 		foreach(ulong currentTag; reservedTags)
 		{
 			if(currentTag == tag)
 			{
-				return true;
+				found = true;
+				break;
 			}
 		}
 
-		return false;
+		/* Unlock the reservedTags mutex */
+		reservedTagsMutex.unlock();
+
+		return found;
 	}
 
 	public void addNotification(NotificationReply notificationReply)
