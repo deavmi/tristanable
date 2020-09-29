@@ -1,5 +1,14 @@
 module tristanable.watcher;
 
+import std.socket : Socket;
+import core.sync.mutex : Mutex;
+import bmessage : receiveMessage;
+import tristanable.queue : Queue;
+import tristanable.queueitem : QueueItem;
+import tristanable.manager : Manager;
+import core.thread : Thread;
+import tristanable.encoding;
+
 public final class Watcher : Thread
 {
 	/* The manager */
@@ -24,7 +33,7 @@ public final class Watcher : Thread
 			byte[] receivedPayload;
 			
 			/* Block for socket response */
-			bool recvStatus = receiveMessage(endpoint, receivedPayload);
+			bool recvStatus = receiveMessage(socket, receivedPayload);
 
 			/* If the receive was successful */
 			if(recvStatus)

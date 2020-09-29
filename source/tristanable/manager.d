@@ -1,6 +1,9 @@
+module tristanable.manager;
+
 import std.socket : Socket;
 import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;
+import tristanable.queue : Queue;
 
 public final class Manager
 {
