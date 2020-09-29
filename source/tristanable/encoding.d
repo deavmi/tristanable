@@ -3,8 +3,8 @@ module tristanable.encoding;
 public final class DataMessage
 {
 
-    public ulong tag;
-    public byte[] data;
+    private ulong tag;
+    private byte[] data;
 
     public static DataMessage decode(byte[] bytes)
     {
@@ -42,5 +42,15 @@ public final class DataMessage
         messageData ~= data;
 
         return messageData;
+    }
+
+    public byte[] getData()
+    {
+        return data;
+    }
+
+    public ulong getTag()
+    {
+        return tag;
     }
 }
