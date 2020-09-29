@@ -11,6 +11,9 @@
 module tristanable.queue;
 
 import tristanable.queueitem : QueueItem;
+import std.socket : Socket;
+import core.sync.mutex : Mutex;
+import bmessage : bSendMessage = sendMessage;
 
 public final class Queue
 {
