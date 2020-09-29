@@ -1,3 +1,7 @@
+import std.socket : Socket;
+import core.sync.mutex : Mutex;
+import bmessage : bSendMessage = sendMessage;
+
 public final class Manager
 {
 	/* All queues */
@@ -6,15 +10,64 @@ public final class Manager
 	
 	/* TODO Add drop queue? */
 	
-	this()
+	/**
+    * The remote host
+    */
+    private Socket socket;
+
+
+
+	/**
+	* Constructs a new Manager with the given
+	* endpoint Socket
+	*
+	*/
+	this(Socket socket)
 	{
-		
+		/* Set the socket */
+		this.socket = socket;
+
+		/* Initialize the queues mutex */
+		queuesLock = new Mutex();
+
+		/* Initialize the watcher */
 	}
 
-
-	public void addQueue()
+	public Queue getQueue(ulong tag)
 	{
-		
+		Queue matchingQueue;
+
+		queuesLock.lock();
+
+		foreach(Queue queue; queues)
+		{
+			if(queue.getTag() == tag)
+			{
+				matchingQueue = queue;
+				break;
+			}
+		}
+
+		queuesLock.unlock();
+
+		return matchingQueue;
+	}
+
+	public void addQueue(Queue queue)
+	{
+		queuesLock.lock();
+
+		/* Make sure such a tag does not exist already */
+		if(!isValidTag_callerThreadSafe(queue.getTag()))
+		{
+			queues ~= queue;
+		}
+		else
+		{
+			/* TODO: Throw an error here */
+		}
+
+		queuesLock.unlock();
 	}
 
 	private bool isValidTag_callerThreadSafe(ulong tag)
@@ -49,4 +102,9 @@ public final class Manager
 		return tagExists;
 	}
 	
+
+	public void shutdown()
+	{
+		/* TODO: Implement me */
+	}
 }

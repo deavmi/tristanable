@@ -1,10 +1,18 @@
-//module
+module tristanable.watcher;
 
 public final class Watcher : Thread
 {
-	this()
+	/* The manager */
+	private Manager manager;
+
+	/* The socket to read from */
+	private Socket socket;
+
+	this(Manager manager, Socket endpoint)
 	{
-		
+		super(&run);
+		this.manager = manager;
+		socket = endpoint;
 	}
 
 	private void run()
@@ -24,8 +32,24 @@ public final class Watcher : Thread
 				/* Decode the ttag-encoded message */
 				DataMessage message = DataMessage.decode(receivedPayload);
 
-				
+				/* TODO: Remove isTag, improve later, oneshot */
 
+				/* The matching queue (if any) */
+				Queue queue = manager.getQueue(message.getTag());
+
+				/* If the tag belongs to a queue */
+				if(queue)
+				{
+					/* Add an item to this queue */
+					queue.enqueue(new QueueItem(message.getData()));
+				}
+				/* If the tag is unknwon */
+				else
+				{
+					/* TODO: Add to dropped queue? */
+
+					/* Do nothing */
+				}
 			}
 			/* If the receive failed */
 			else
