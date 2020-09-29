@@ -1,0 +1,4 @@
+- [x] Use queues
+- [x] Immediate head chop after dequeue
+- [x] Thread.yields
+- [ ] Use linked list for queues (increase performance)
