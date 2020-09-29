@@ -14,6 +14,7 @@ import tristanable.queueitem : QueueItem;
 import std.socket : Socket;
 import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;
+import core.thread : Thread;
 
 public final class Queue
 {
