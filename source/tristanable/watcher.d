@@ -22,6 +22,8 @@ public final class Watcher : Thread
 		super(&run);
 		this.manager = manager;
 		socket = endpoint;
+
+		start();
 	}
 
 	private void run()
