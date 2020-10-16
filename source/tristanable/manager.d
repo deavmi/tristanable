@@ -4,6 +4,7 @@ import std.socket : Socket;
 import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;
 import tristanable.queue : Queue;
+import tristanable.watcher;
 
 public final class Manager
 {
@@ -18,6 +19,8 @@ public final class Manager
     */
     private Socket socket;
 
+
+	private Watcher watcher;
 
 
 	/**
@@ -34,6 +37,8 @@ public final class Manager
 		queuesLock = new Mutex();
 
 		/* Initialize the watcher */
+		watcher = new Watcher(this, socket);
+
 	}
 
 	public Queue getQueue(ulong tag)
