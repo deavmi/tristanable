@@ -18,6 +18,10 @@ Tristanable provides a way for you to receive the "IM notification first" but bl
 If we wanted to implement the following we would do the following. One note is that instead of waiting on messages of a specific _"type"_ (or rather **tag**), tristanable provides not just a one-message lengthb uffer per tag but infact a full queue per tag, meaning any received message with tag `1` will be enqueued and not dropped after the first message of type `1` is buffered.
 
 ```d
+import tristanable.manager;
+import tristanable.queue;
+import tristanable.queueitem;
+
 /* Create a manager to manage the socket for us */
 Manager manager = new Manager(socket);
 
@@ -30,39 +34,25 @@ Queue instantNotification = new Queue(2);
 /* Tell the manager to look out for tagged messages `1` and `2` */
 manager.addQueue(weatherQueue);
 manager.addQueue(instantNotification);
+
+/* Now we can block on this queue and return with its head */
+QueueItem message = weatherQueue.dequeue();
 ```
 
-
-However, you want to read these off of a socket and act accordi
-
-## Usage
-
-The entry point is via the `Manager` type, so first create an instance as follows (passing the endpoint `Socket` in as `socket` in this example):
+Surely, there must be some sort of encoding mechanism too? The messages afterall need to be encoded. **No problem!**, we have that sorted:
 
 ```d
-Manager manager = new Manager(socket);
+import tristanable.encoding;
+
+/* Let's send it with tag 1 and data "Hello" */
+ulong tag = 1;
+byte[] data = cast(byte[])"Hello";
+
+/* When sending a message */
+DataMessage tristanEncoded = new DataMessage(tag, data);
 ```
 
-Now the event loop would have started, now we are ready to send out some tagged messages and blocking receive for them!
-
-Let's send out two messages with tags `1` and `2`:
-
-```d
-manager.sendMessage(1, [1,2,3,4,5]);
-manager.sendMessage(2, [6,7,8,9,0]);
-```
-
-Now we can start two seperate threads and wait on them both:
-
-```d
-byte[] receivedData = manager.receiveMessage(1);
-```
-
-```d
-byte[] receivedData = manager.receiveMessage(2);
-```
-
-**TODO**
+And let tristanable handle it! We even handle the message lengths and everything using another great project [bformat](http://deavmi.assigned.network/projects/bformat).
 
 ## Format
 
