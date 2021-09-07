@@ -60,6 +60,17 @@ And let tristanable handle it! We even handle the message lengths and everything
 [4 bytes (size-2, little endian)][8 bytes - tag][(2-size) bytes - data]
 ```
 
-## Acknowledgements
+## Using tristanable in your D project
+You can easily add the library (source-based) to your project by running the following command in your
+project's root:
 
-Thansk to Gabby Smuts for the name suggestion 😉️
+```bash
+dub add tristanable
+```
+
+## Acknowledgments
+
+I had to make amends with a friend for calling one of my projects by a certain name (of a certain someone)
+over one of her suggestions so I decided to take her suggestion, "tristanable", and call this project after it!
+
+Thanks Gabby Smuts 😉️ ([@kwarantuin](https://www.instagram.com/kwarantuin/) - check out her really cool art)
