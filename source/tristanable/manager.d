@@ -5,11 +5,12 @@ import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;
 import tristanable.queue : Queue;
 import tristanable.watcher;
+import std.container.dlist;
 
 public final class Manager
 {
 	/* All queues */
-	private Queue[] queues;
+	private DList!(Queue) queues;
 	private Mutex queuesLock;
 	
 	/* TODO Add drop queue? */

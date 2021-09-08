@@ -15,6 +15,7 @@ import std.socket : Socket;
 import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;
 import core.thread : Thread;
+import std.container.dlist;
 
 public final class Queue
 {
@@ -22,7 +23,7 @@ public final class Queue
 	private ulong tag;
 
 	/* The queue */
-	private QueueItem[] queue;
+	private DList!(QueueItem) queue;
 
 	/* The queue mutex */
 	private Mutex queueLock;
@@ -66,13 +67,14 @@ public final class Queue
 			queueLock.lock();
 
 			/* Check if we can dequeue anything */
-			if(queue.length)
+			if(!queue.empty())
 			{
 				/* If we can then dequeue */
-				queueHead = queue[0];
+				queueHead = queue.front();
+				queue.removeFront();
 
 				/* Chop off the head */
-				offWithTheHead();
+				// offWithTheHead();
 			}
 
 			/* Unlock the queue */
@@ -102,20 +104,20 @@ public final class Queue
 	* Not thread safe but only called by thread
 	* safe (mutex locking) method
 	*/
-	private void offWithTheHead()
-	{
-		/* The new queue */
-		QueueItem[] newQueue;
+	// private void offWithTheHead()
+	// {
+	// 	/* The new queue */
+	// 	QueueItem[] newQueue;
 
-		/* Add everything but the first */
-		for(ulong i = 1; i < queue.length; i++)
-		{
-			newQueue ~= queue[i];
-		}
+	// 	/* Add everything but the first */
+	// 	for(ulong i = 1; i < queue.length; i++)
+	// 	{
+	// 		newQueue ~= queue[i];
+	// 	}
 
-		/* Make the the new queue */
-		queue = newQueue;
-	}
+	// 	/* Make the the new queue */
+	// 	queue = newQueue;
+	// }
 
 	/**
 	* Returns the tag for this queue
