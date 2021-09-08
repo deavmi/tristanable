@@ -62,6 +62,49 @@ public final class Manager
 		return matchingQueue;
 	}
 
+	/**
+	* Returns a new queue with a new ID,
+	* if all IDs are used then it returns
+	* null
+	*
+	* Use this if you don't care about reserving
+	* queues IDs and just want a throwaway queue
+	*/
+	public Queue generateQueue()
+	{
+		/* Newly generated queue */
+		Queue newQueue;
+
+		queuesLock.lock();
+
+		ulong curGuess = 0;
+		bool bad = true;
+		reguess: while(bad)
+		{
+			foreach(Queue queue; queues)
+			{
+				if(queue.getTag() == curGuess)
+				{
+					curGuess++;
+					continue reguess;
+				}
+			}
+
+			bad = false;
+		}
+		
+		/* Create the new queue with the free id found */
+		newQueue = new Queue(curGuess);
+
+		/* Add the queue */
+		queues ~= newQueue;
+
+		queuesLock.unlock();
+
+
+		return newQueue;
+	}
+
 	public void addQueue(Queue queue)
 	{
 		queuesLock.lock();
