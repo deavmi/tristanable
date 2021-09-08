@@ -94,6 +94,10 @@ public final class Queue
 	/**
 	* Attempts to coninuously dequeue the
 	* head of the queue
+	*
+	* TODO: Add a timeout capability
+	* TODO: Add tryLock, yield on failure (with loop for recheck ofc)
+	* TODO: Possible multiple dequeue feature? Like .receive
 	*/
 	public QueueItem dequeue()
 	{
