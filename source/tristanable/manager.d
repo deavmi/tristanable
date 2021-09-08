@@ -118,7 +118,7 @@ public final class Manager
 		queuesLock.lock();
 
 		/* Make sure such a tag does not exist already */
-		if(!isValidTag_callerThreadSafe(queue.getTag()))
+		if(!isValidTag(queue.getTag()))
 		{
 			queues ~= queue;
 		}
