@@ -16,6 +16,7 @@ import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;
 import core.thread : Thread;
 import std.container.dlist;
+import std.range : walkLength;
 
 public enum QueuePolicy : ubyte
 {
@@ -75,9 +76,6 @@ public final class Queue
 		*/
 		if(flags & QueuePolicy.LENGTH_CAP)
 		{
-			
-			import std.range;
-			
 			if(walkLength(queue[]) == lengthCap)
 			{
 				goto unlock;
