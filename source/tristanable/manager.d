@@ -130,8 +130,6 @@ public final class Manager
 		queuesLock.unlock();
 	}
 
-	
-
 	/**
 	* TODO: Comment
 	* TODO: Testing
