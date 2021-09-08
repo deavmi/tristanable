@@ -3,3 +3,4 @@
 - [x] Thread.yields
 - [ ] Sleep option
 - [ ] Use linked list for queues (increase performance)
+- [ ] shutdown option
