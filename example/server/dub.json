@@ -5,7 +5,7 @@
 	"copyright": "Copyright © 2020, Tristan B. Kildaire",
 	"dependencies": {
 		"bformat": "~>1.0.8",
-		"tristanable": "~>0.0.13"
+		"tristanable": "~>2.2.1"
 	},
 	"description": "A minimal D application.",
 	"license": "proprietary",
