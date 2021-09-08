@@ -110,6 +110,23 @@ public final class Manager
 		return newQueue;
 	}
 
+	public void removeQueue(Queue queue)
+	{
+		queuesLock.lock();
+
+		/* Make sure such a tag exists */
+		if(isValidTag(queue.getTag()))
+		{
+			queues.linearRemoveElement(queue);
+		}
+		else
+		{
+			/* TODO: Throw an error here */
+		}
+
+		queuesLock.unlock();
+	}
+
 	public void addQueue(Queue queue)
 	{
 		queuesLock.lock();

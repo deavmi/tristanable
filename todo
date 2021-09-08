@@ -7,3 +7,4 @@
 - [ ] Queue policies
     - [x] Length cap
 - [ ] Exceptions
+- [x] Queue deletion
