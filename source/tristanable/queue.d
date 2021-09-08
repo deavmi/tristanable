@@ -17,6 +17,11 @@ import bmessage : bSendMessage = sendMessage;
 import core.thread : Thread;
 import std.container.dlist;
 
+public enum QueuePolicy : ubyte
+{
+	LENGTH_CAP = 1
+}
+
 public final class Queue
 {
 	/* This queue's tag */
@@ -32,7 +37,7 @@ public final class Queue
 	* Construct a new queue with the given
 	* tag
 	*/
-	this(ulong tag)
+	this(ulong tag, QueuePolicy flags = cast(QueuePolicy)0)
 	{
 		this.tag = tag;
 
@@ -40,13 +45,49 @@ public final class Queue
 		queueLock = new Mutex();
 	}
 
+	public void setLengthCap(ulong lengthCap)
+	{
+		this.lengthCap = lengthCap;
+	}
+
+	public ulong getLengthCap(ulong lengthCap)
+	{
+		return lengthCap;
+	}
+
+	/**
+	* Queue policy settings
+	*/
+	private ulong lengthCap = 1;
+	private QueuePolicy flags;
+	
+
 	public void enqueue(QueueItem item)
 	{
 		/* Lock the queue */
 		queueLock.lock();
 
+		/**
+		* Check to see if the queue has a length cap
+		*
+		* If so then determine whether to drop or
+		* keep dependent on current capacity
+		*/
+		if(flags & QueuePolicy.LENGTH_CAP)
+		{
+			
+			import std.range;
+			
+			if(walkLength(queue[]) == lengthCap)
+			{
+				goto unlock;
+			}
+		}
+
 		/* Add it to the queue */
 		queue ~= item;
+
+		unlock:
 
 		/* Unlock the queue */
 		queueLock.unlock();
