@@ -4,3 +4,6 @@
 - [ ] Sleep option
 - [ ] Use linked list for queues (increase performance)
 - [ ] shutdown option
+- [ ] Queue policies
+    - [x] Length cap
+- [ ] Exceptions
