@@ -110,6 +110,21 @@ public final class Manager
 		return newQueue;
 	}
 
+	public Queue[] getQueues()
+	{
+		Queue[] queues;
+		queuesLock.lock();
+
+		foreach(Queue queue; this.queues)
+		{
+			queues ~= queue;
+		}
+
+		queuesLock.unlock();
+
+		return queues;
+	}
+
 	public void removeQueue(Queue queue)
 	{
 		queuesLock.lock();
