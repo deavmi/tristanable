@@ -98,28 +98,6 @@ public final class Queue
 	}
 
 	/**
-	* Shifts the list and regenerates it to remove
-	* the current head
-	*
-	* Not thread safe but only called by thread
-	* safe (mutex locking) method
-	*/
-	// private void offWithTheHead()
-	// {
-	// 	/* The new queue */
-	// 	QueueItem[] newQueue;
-
-	// 	/* Add everything but the first */
-	// 	for(ulong i = 1; i < queue.length; i++)
-	// 	{
-	// 		newQueue ~= queue[i];
-	// 	}
-
-	// 	/* Make the the new queue */
-	// 	queue = newQueue;
-	// }
-
-	/**
 	* Returns the tag for this queue
 	*/
 	public ulong getTag()
