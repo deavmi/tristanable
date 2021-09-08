@@ -130,22 +130,7 @@ public final class Manager
 		queuesLock.unlock();
 	}
 
-	private bool isValidTag_callerThreadSafe(ulong tag)
-	{
-		bool tagExists;
-
-		
-		foreach(Queue queue; queues)
-		{
-			if(queue.getTag() == tag)
-			{
-				tagExists = true;
-				break;
-			}
-		}
-
-		return tagExists;
-	}
+	
 
 	/**
 	* TODO: Comment
