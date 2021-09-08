@@ -62,6 +62,12 @@ public final class Manager
 		return matchingQueue;
 	}
 
+	/* TODO: Probably remove this or keep it */
+	public bool isValidTag(ulong tag)
+	{
+		return !(getQueue(tag) is null);
+	}
+
 	/**
 	* Returns a new queue with a new ID,
 	* if all IDs are used then it returns
@@ -69,6 +75,8 @@ public final class Manager
 	*
 	* Use this if you don't care about reserving
 	* queues IDs and just want a throwaway queue
+	*
+	* FIXME: All tags in use, this won't handle it
 	*/
 	public Queue generateQueue()
 	{
@@ -139,22 +147,10 @@ public final class Manager
 		return tagExists;
 	}
 
-	public bool isValidTag(ulong tag)
-	{
-		/* Whether or not such a tagged queue exists */
-		bool tagExists;
-
-		
-		queuesLock.lock();
-
-		tagExists = isValidTag_callerThreadSafe(tag);
-
-		queuesLock.unlock();
-
-		return tagExists;
-	}
-	
-
+	/**
+	* TODO: Comment
+	* TODO: Testing
+	*/
 	public void shutdown()
 	{
 		/* TODO: Implement me */
