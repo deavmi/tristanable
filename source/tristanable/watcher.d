@@ -26,7 +26,7 @@ public final class Watcher : Thread
 		this.manager = manager;
 		socket = endpoint;
 
-		// running = true;
+		running = true;
 		start();
 	}
 
