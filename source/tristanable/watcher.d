@@ -17,13 +17,22 @@ public final class Watcher : Thread
 	/* The socket to read from */
 	private Socket socket;
 
+	// private bool running;
+
 	this(Manager manager, Socket endpoint)
 	{
 		super(&run);
 		this.manager = manager;
 		socket = endpoint;
 
+		// running = true;
 		start();
+	}
+
+	public void shutdown()
+	{
+		/* Close the socket, causing an error, breaking the event loop */
+		socket.close();
 	}
 
 	private void run()

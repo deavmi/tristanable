@@ -115,5 +115,11 @@ public final class Manager
 	public void shutdown()
 	{
 		/* TODO: Implement me */
+
+		/* Make the loop stop whenever it does */
+		watcher.shutdown();
+
+		/* Wait for the thread to end */
+		watcher.join();
 	}
 }
