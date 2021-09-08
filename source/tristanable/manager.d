@@ -89,13 +89,10 @@ public final class Manager
 		bool bad = true;
 		reguess: while(bad)
 		{
-			foreach(Queue queue; queues)
+			if(isValidTag(curGuess))
 			{
-				if(queue.getTag() == curGuess)
-				{
-					curGuess++;
-					continue reguess;
-				}
+				curGuess++;
+				continue reguess;
 			}
 
 			bad = false;
