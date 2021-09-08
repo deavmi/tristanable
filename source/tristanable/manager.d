@@ -62,12 +62,6 @@ public final class Manager
 		return matchingQueue;
 	}
 
-	public void sendMessage(DataMessage message)
-	{
-		import bmessage;
-		sendMessage(socket, message);
-	}
-
 	/* TODO: Probably remove this or keep it */
 	public bool isValidTag(ulong tag)
 	{

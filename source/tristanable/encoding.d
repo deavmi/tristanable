@@ -58,3 +58,10 @@ public final class DataMessage
         return tag;
     }
 }
+
+public static byte[] encodeForSend(DataMessage message)
+{
+    import bmessage;
+    
+	return encodeBformat(message.encode());
+}
