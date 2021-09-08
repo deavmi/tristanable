@@ -30,11 +30,6 @@ public final class Watcher : Thread
 		start();
 	}
 
-	public Socket getSocket()
-	{
-		return socket;
-	}
-
 	public void shutdown()
 	{
 		running=false;

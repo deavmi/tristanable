@@ -159,6 +159,11 @@ public final class Manager
 		queuesLock.unlock();
 	}
 
+	public Socket getSocket()
+	{
+		return socket;
+	}
+
 	/**
 	* TODO: Comment
 	* TODO: Testing
