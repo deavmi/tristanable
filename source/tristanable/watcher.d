@@ -8,6 +8,7 @@ import tristanable.queueitem : QueueItem;
 import tristanable.manager : Manager;
 import core.thread : Thread;
 import tristanable.encoding;
+import tristanable.exceptions;
 
 public final class Watcher : Thread
 {
@@ -17,7 +18,7 @@ public final class Watcher : Thread
 	/* The socket to read from */
 	private Socket socket;
 
-	// private bool running;
+	private bool running;
 
 	this(Manager manager, Socket endpoint)
 	{
@@ -31,8 +32,11 @@ public final class Watcher : Thread
 
 	public void shutdown()
 	{
+		running=false;
+
 		/* Close the socket, causing an error, breaking the event loop */
 		socket.close();
+		
 	}
 
 	private void run()
@@ -74,6 +78,8 @@ public final class Watcher : Thread
 			/* If the receive failed */
 			else
 			{
+				/* TODO: depending on `running`, different error */
+
 				/* TODO: Stop everything */
 				break;
 			}
@@ -86,6 +92,16 @@ public final class Watcher : Thread
 			* thread
 			*/
 			Thread.getThis().yield();
+		}
+
+		/* Check if we had an error */
+		if(running)
+		{
+			throw new TristanableException(manager, "bformat socket error");
+		}
+		else
+		{
+			/* Actual shut down, do nothing */
 		}
 	}
 }
