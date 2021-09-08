@@ -1,4 +1,5 @@
 - [x] Use queues
 - [x] Immediate head chop after dequeue
 - [x] Thread.yields
+- [ ] Sleep option
 - [ ] Use linked list for queues (increase performance)
