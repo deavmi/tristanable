@@ -96,8 +96,8 @@ public final class Manager
 		/* Create the new queue with the free id found */
 		newQueue = new Queue(curGuess);
 
-		/* Add the queue */
-		queues ~= newQueue;
+		/* Add the queue (recursive mutex) */
+		addQueue(newQueue);
 
 		queuesLock.unlock();
 
