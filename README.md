@@ -50,6 +50,9 @@ byte[] data = cast(byte[])"Hello";
 
 /* When sending a message */
 DataMessage tristanEncoded = new DataMessage(tag, data);
+
+/* Then send it */
+manager.sendMessage(tristanEncoded);
 ```
 
 And let tristanable handle it! We even handle the message lengths and everything using another great project [bformat](http://deavmi.assigned.network/projects/bformat).
