@@ -91,6 +91,22 @@ public final class Queue
 		queueLock.unlock();
 	}
 
+	public bool poll()
+	{
+		/* Status */
+		bool status;
+
+		/* Lock the queue */
+		queueLock.lock();
+
+		status = !queue.empty();
+
+		/* Unlock the queue */
+		queueLock.unlock();
+
+		return status;
+	}
+
 	/**
 	* Attempts to coninuously dequeue the
 	* head of the queue
