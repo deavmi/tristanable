@@ -48,6 +48,8 @@ public final class Manager
 	*/
 	this(Socket socket)
 	{
+		/* TODO: Make sure the socket is in STREAM mode */
+		
 		/* Set the socket */
 		this.socket = socket;
 
@@ -56,7 +58,6 @@ public final class Manager
 
 		/* Initialize the watcher */
 		watcher = new Watcher(this, socket);
-
 	}
 
 	public Queue getQueue(ulong tag)
