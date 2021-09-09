@@ -6,6 +6,7 @@ import bmessage : bSendMessage = sendMessage;
 import tristanable.queue : Queue;
 import tristanable.watcher;
 import std.container.dlist;
+import tristanable.exceptions;
 
 public final class Manager
 {
@@ -153,7 +154,9 @@ public final class Manager
 		}
 		else
 		{
-			/* TODO: Throw an error here */
+			/* Unlock queue before throwing an exception */
+			queuesLock.unlock();
+			throw new TristanableException(this, "Cannot add queue with id already in use");
 		}
 
 		queuesLock.unlock();
