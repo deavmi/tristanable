@@ -126,6 +126,13 @@ public final class Manager
 		return queues;
 	}
 
+	/**
+	* Removes the given Queue, `queue`, from the manager
+	*
+	* Throws a TristanableException if the id of the
+	* queue wanting to be removed is not in use by any
+	* queue already added
+	*/
 	public void removeQueue(Queue queue)
 	{
 		queuesLock.lock();
@@ -145,6 +152,13 @@ public final class Manager
 		queuesLock.unlock();
 	}
 
+	/**
+	* Adds the given Queue, `queue`, to the manager
+	*
+	* Throws a TristanableException if the id of the
+	* queue wanting to be added is already in use by
+	* another already added queue
+	*/
 	public void addQueue(Queue queue)
 	{
 		queuesLock.lock();
