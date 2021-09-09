@@ -91,6 +91,10 @@ public final class Queue
 		queueLock.unlock();
 	}
 
+	/**
+	* Returns true if this queue has items ready
+	* to be dequeued, false otherwise
+	*/
 	public bool poll()
 	{
 		/* Status */
