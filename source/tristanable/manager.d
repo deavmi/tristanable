@@ -8,6 +8,22 @@ import tristanable.watcher;
 import std.container.dlist;
 import tristanable.exceptions;
 
+/**
+* Manager
+*
+* This is the core class that is to be instantiated
+* that represents an instance of the tristanable
+* framework. It is passed a Socket from which it
+* reads from (using a bformat block reader).
+*
+* It contains a Watcher which does the reading and
+* appending to respective queues (the user need not
+* worry about this factum).
+*
+* The functions provided allow users to wait in a
+* tight loop to dequeue ("receive" in a blcoking mannger)
+* from a specified queue.
+*/
 public final class Manager
 {
 	/* All queues */
