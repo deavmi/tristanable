@@ -137,7 +137,9 @@ public final class Manager
 		}
 		else
 		{
-			/* TODO: Throw an error here */
+			/* Unlock queue before throwing an exception */
+			queuesLock.unlock();
+			throw new TristanableException(this, "Cannot remove a queue with an id not in use");
 		}
 
 		queuesLock.unlock();
