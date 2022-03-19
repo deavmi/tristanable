@@ -44,6 +44,8 @@ public final class Queue
 
 		/* Initialize the mutex */
 		queueLock = new Mutex();
+
+		this.flags = flags;
 	}
 
 	public void setLengthCap(ulong lengthCap)
