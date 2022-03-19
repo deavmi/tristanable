@@ -70,10 +70,3 @@ project's root:
 ```bash
 dub add tristanable
 ```
-
-## Acknowledgments
-
-I had to make amends with a friend for calling one of my projects by a certain name (of a certain someone)
-over one of her suggestions so I decided to take her suggestion, "tristanable", and call this project after it!
-
-Thanks Gabby Smuts 😉️ ([@kwarantuin](https://www.instagram.com/kwarantuin/) - check out her really cool art)
