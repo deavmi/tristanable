@@ -70,6 +70,43 @@ public final class Watcher : Thread
 			/* Receive payload (tag+data) */
 			byte[] receivedPayload;
 			
+
+
+ 			/* We want to check if `endpoint` can be read from */
+            socketSetR.add(endpoint);
+
+            /* Check if the endpoint has any data available */
+            int status = Socket.select(socketSetR, socketSetW, socketSetE, timeOut);
+
+            /* If we timed out on the select() */
+            if(status == 0)
+            {
+                /* Check if we need to exit */
+                continue;
+            }
+            /* Interrupt */
+            else if (status == -1)
+            {
+                /* TODO: Not sure what we should do here */
+
+            }
+            /* Either data is available or a network occurred */
+            else
+            {
+                /* If we have data */
+                if(socketSetR.isSet(endpoint))
+                {
+                    /* Do nothing (fall through) */
+
+                }
+                /* We have an error */
+                else
+                {
+                    /* TODO: Handle this */
+                }
+            }
+
+
 			/* Block for socket response */
 			bool recvStatus = receiveMessage(socket, receivedPayload);
 
