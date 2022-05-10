@@ -106,6 +106,8 @@ public final class Watcher : Thread
                 }
             }
 
+			socketSetR.reset();
+
 
 			/* Block for socket response */
 			bool recvStatus = receiveMessage(endpoint, receivedPayload);
