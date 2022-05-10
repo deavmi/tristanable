@@ -16,7 +16,7 @@ public final class Watcher : Thread
 	private Manager manager;
 
 	/* The socket to read from */
-	private Socket socket;
+	private Socket endpoint;
 
 	private bool running;
 
@@ -32,7 +32,7 @@ public final class Watcher : Thread
 	{
 		super(&run);
 		this.manager = manager;
-		socket = endpoint;
+		this.endpoint = endpoint;
 
 		initSelect();
 
@@ -58,7 +58,7 @@ public final class Watcher : Thread
 		running=false;
 
 		/* Close the socket, causing an error, breaking the event loop */
-		socket.close();
+		endpoint.close();
 		
 	}
 
@@ -108,7 +108,7 @@ public final class Watcher : Thread
 
 
 			/* Block for socket response */
-			bool recvStatus = receiveMessage(socket, receivedPayload);
+			bool recvStatus = receiveMessage(endpoint, receivedPayload);
 
 			/* If the receive was successful */
 			if(recvStatus)
