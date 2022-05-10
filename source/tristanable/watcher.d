@@ -6,7 +6,7 @@ import bmessage : receiveMessage;
 import tristanable.queue : Queue;
 import tristanable.queueitem : QueueItem;
 import tristanable.manager : Manager;
-import core.thread : Thread;
+import core.thread : Thread, Duration, dur;
 import tristanable.encoding;
 import tristanable.exceptions;
 
@@ -22,13 +22,21 @@ public final class Watcher : Thread
 
 	private SocketSet socketSetR, socketSetW, socketSetE;
 
-	this(Manager manager, Socket endpoint)
+
+    /**
+    * Timeout for select()
+    */
+    private Duration timeOut;
+
+	this(Manager manager, Socket endpoint, Duration timeOut = dur!("msecs")(100))
 	{
 		super(&run);
 		this.manager = manager;
 		socket = endpoint;
 
 		initSelect();
+
+		 this.timeOut = timeOut;
 
 		running = true;
 		start();
