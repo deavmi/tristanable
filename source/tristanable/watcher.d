@@ -1,6 +1,6 @@
 module tristanable.watcher;
 
-import std.socket : Socket;
+import std.socket : Socket, SocketSet;
 import core.sync.mutex : Mutex;
 import bmessage : receiveMessage;
 import tristanable.queue : Queue;
@@ -20,15 +20,30 @@ public final class Watcher : Thread
 
 	private bool running;
 
+	private SocketSet socketSetR, socketSetW, socketSetE;
+
 	this(Manager manager, Socket endpoint)
 	{
 		super(&run);
 		this.manager = manager;
 		socket = endpoint;
 
+		initSelect();
+
 		running = true;
 		start();
 	}
+
+ 	/**
+    * Initializes the SocketSet which is needed for the use
+    * of the select() method0
+    */
+    private void initSelect()
+    {
+        socketSetR = new SocketSet();
+        socketSetW = new SocketSet();
+        socketSetE = new SocketSet();
+    }
 
 	public void shutdown()
 	{
