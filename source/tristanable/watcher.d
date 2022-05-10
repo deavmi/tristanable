@@ -59,7 +59,7 @@ public final class Watcher : Thread
     {
         /* We acre about `endpoint` status changes */
         socketSetR = new SocketSet();
-        socketSetR.add(endpoint);
+       
 
         socketSetW = new SocketSet();
         socketSetE = new SocketSet();
@@ -77,6 +77,9 @@ public final class Watcher : Thread
 
             /* The message's data */
             byte[] receivedMessage;
+
+            /* We want to check if `endpoint` can be read from */
+            socketSetR.add(endpoint);
 
             /* Check if the endpoint has any data available */
             int status = Socket.select(socketSetR, socketSetW, socketSetE, timeOut);
@@ -100,6 +103,7 @@ public final class Watcher : Thread
                 if(socketSetR.isSet(endpoint))
                 {
                     /* Do nothing (fall through) */
+
                 }
                 /* We have an error */
                 else
