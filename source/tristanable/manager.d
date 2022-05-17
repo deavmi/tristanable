@@ -4,6 +4,7 @@ import std.socket : Socket;
 import core.sync.mutex : Mutex;
 import bmessage : bSendMessage = sendMessage;
 import tristanable.queue : Queue;
+import core.thread : Thread, Duration, dur;
 import tristanable.watcher;
 import std.container.dlist;
 import tristanable.exceptions;
@@ -46,7 +47,7 @@ public final class Manager
 	* endpoint Socket
 	*
 	*/
-	this(Socket socket)
+	this(Socket socket, Duration timeOut = dur!("msecs")(100), bool newSys = false)
 	{
 		/* TODO: Make sure the socket is in STREAM mode */
 		
@@ -57,7 +58,7 @@ public final class Manager
 		queuesLock = new Mutex();
 
 		/* Initialize the watcher */
-		watcher = new Watcher(this, socket);
+		watcher = new Watcher(this, socket, timeOut, newSys);
 	}
 
 	public Queue getQueue(ulong tag)
