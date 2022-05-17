@@ -221,7 +221,7 @@ public final class Manager
 
 	bool isInvalid()
 	{
-		return isAlive;
+		return !isAlive;
 	}
 
 	/**
