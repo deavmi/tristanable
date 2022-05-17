@@ -8,3 +8,20 @@
     - [x] Length cap
 - [ ] Exceptions
 - [x] Queue deletion
+
+
+
+
+
+## Todo
+
+- [ ] Exception handling
+    - [ ] If the watcher has an error then we should throw an exception
+        * But it has to be on the main thread, therefore it should happen when using any of the `Queue` methods
+        * We need to set a value in those methods for this, everything should then throw an exception as the underlying endpoint is dead
+        - [x] We must set a field in `Manager` which `Queue` can check and then throw an exception
+        - [x] `Queue` must take in the `Manager` instance
+        - [x] Add checks in `Queue` class
+
+
+- [ ] New sys, before calling `continue`, should `yield()`
