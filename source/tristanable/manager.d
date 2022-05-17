@@ -40,6 +40,7 @@ public final class Manager
 
 
 	private Watcher watcher;
+	private bool isAlive;
 
 
 	/**
@@ -51,6 +52,9 @@ public final class Manager
 	{
 		/* TODO: Make sure the socket is in STREAM mode */
 		
+		/* Set this session as alive */
+		this.isAlive = true;
+
 		/* Set the socket */
 		this.socket = socket;
 
@@ -118,7 +122,7 @@ public final class Manager
 		}
 		
 		/* Create the new queue with the free id found */
-		newQueue = new Queue(curGuess);
+		newQueue = new Queue(this, curGuess);
 
 		/* Add the queue (recursive mutex) */
 		addQueue(newQueue);
@@ -199,6 +203,25 @@ public final class Manager
 	public Socket getSocket()
 	{
 		return socket;
+	}
+
+	/** 
+	 * Called by the Watcher thread when there is a socket
+	 * error such that the `isValid` status field that
+	 * the Queue operations check can be checked to see
+	 * if the Queue calls should unblock due to a dead
+	 * socket
+
+	 * FIXME: End user should not be able to call this
+	 */
+	void invalidate()
+	{
+		isAlive = false;
+	}
+
+	bool isInvalid()
+	{
+		return isAlive;
 	}
 
 	/**
