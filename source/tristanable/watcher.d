@@ -202,11 +202,18 @@ public final class Watcher : Thread
 		/* Check if we had an error */
 		if(running)
 		{
-			throw new TristanableException(manager, "bformat socket error");
+			/* Unblock all current Queue operations and prevent future ones */
+			manager.invalidate();
+
+			/* TODO: Remove this */
+			// throw new TristanableException(manager, "bformat socket error");
 		}
 		else
 		{
 			/* Actual shut down, do nothing */
+
+			/* Unblock all current Queue operations and prevent future ones */
+			manager.invalidate();
 		}
 	}
 }
