@@ -3,7 +3,7 @@ module tristanable.exceptions;
 import tristanable.manager;
 import tristanable.queue : Queue;
 
-public final class TristanableException : Exception
+public class TristanableException : Exception
 {
     this(Manager manager, string message)
     {
@@ -25,5 +25,17 @@ public final class TristanableException : Exception
         //  msg ~= manager.getQueues()
 
         return msg;
+    }
+}
+
+/**
+* Thrown in relation to problems whereby the Manager is
+* at fault, i.e. whereby it may have had a socket die
+*/
+public final class ManagerError : TristanableException
+{
+    this(Manager man, string msg)
+    {
+        super(man, msg);
     }
 }
