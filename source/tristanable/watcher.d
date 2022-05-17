@@ -20,6 +20,8 @@ public final class Watcher : Thread
 
 	private bool running;
 
+
+	private bool newSys;
 	private SocketSet socketSetR, socketSetW, socketSetE;
 
 
@@ -28,13 +30,19 @@ public final class Watcher : Thread
     */
     private Duration timeOut;
 
-	this(Manager manager, Socket endpoint, Duration timeOut = dur!("msecs")(100))
+	this(Manager manager, Socket endpoint, Duration timeOut = dur!("msecs")(100), bool newSys = false)
 	{
 		super(&run);
 		this.manager = manager;
 		this.endpoint = endpoint;
 
-		initSelect();
+
+		this.newSys = newSys;
+		if(newSys)
+		{
+			initSelect();
+		}
+		
 
 		 this.timeOut = timeOut;
 
@@ -71,43 +79,78 @@ public final class Watcher : Thread
 			byte[] receivedPayload;
 			
 
+			if(newSys)
+			{
+				/**
+				* We want to check the readable status of the `endpoint` socket, we use
+				* the `select()` function for this. However, after selecting it will need
+				* to be re-added if you want to check again. Example, if you add it to
+				* the `socketSetR` (the readable-socketset) then if we time out or it
+				* is not readable from it will be removed from said set.
+				*
+				* Therefore we will need to add it back again for our next check (via
+				* calling `select()`)
+				*/
+				socketSetR.add(endpoint);
+				int status = Socket.select(socketSetR, null, null, timeOut);
 
- 			/* We want to check if `endpoint` can be read from */
-            socketSetR.add(endpoint);
+				import std.stdio : writeln;
 
-            /* Check if the endpoint has any data available */
-            int status = Socket.select(socketSetR, socketSetW, socketSetE, timeOut);
+				/* If we timed out on the select() */
+				if(status == 0)
+				{
+					/* Check if we need to exit */
+					writeln("We got 0");
 
-            /* If we timed out on the select() */
-            if(status == 0)
-            {
-                /* Check if we need to exit */
-                continue;
-            }
-            /* Interrupt */
-            else if (status == -1)
-            {
-                /* TODO: Not sure what we should do here */
+					continue;
+				}
+				/* Interrupt */
+				else if (status == -1)
+				{
+					/* TODO: Not sure what we should do here */
+					writeln("We got -1");
 
-            }
-            /* Either data is available or a network occurred */
-            else
-            {
-                /* If we have data */
-                if(socketSetR.isSet(endpoint))
-                {
-                    /* Do nothing (fall through) */
+					import core.stdc.errno;
+					writeln(errno);
 
-                }
-                /* We have an error */
-                else
-                {
-                    /* TODO: Handle this */
-                }
-            }
+					continue;
+				}
+				/* Either data is available or a network occurred */
+				else
+				{
+					writeln("Info: ", endpoint.isAlive);
+					writeln("info: ", endpoint.handle);
 
-			socketSetR.reset();
+					writeln("We got ", status);
+					
 
+					/* If the socket is still connected */
+					if(endpoint.isAlive())
+					{
+						/* If we have data */
+						if(socketSetR.isSet(endpoint))
+						{
+							/* Do nothing (fall through) */
+							writeln("We got ready socket");
+
+							/* I don't want to do mulitple additions, so let's clear the socket read set */
+							socketSetR.reset();
+						}
+
+						/* There is no else as the only socket set checked for IS read */
+					}
+					/* If the socket is not connected (network error) */
+					else
+					{
+						/* TODO: Maybe handle? */
+						writeln("We have socket error");
+						
+						// throw new TristanableException(manager, "Network error with endpoint socket");
+						break;
+					}
+					
+				}
+			}
 
 			/* Block for socket response */
 			bool recvStatus = receiveMessage(endpoint, receivedPayload);
