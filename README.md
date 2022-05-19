@@ -35,6 +35,9 @@ Queue instantNotification = new Queue(2);
 manager.addQueue(weatherQueue);
 manager.addQueue(instantNotification);
 
+/* We can tell tristanable to start reading from the socket now */
+manager.start();
+
 /* Now we can block on this queue and return with its head */
 QueueItem message = weatherQueue.dequeue();
 ```

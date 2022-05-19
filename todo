@@ -25,3 +25,10 @@
 
 
 - [ ] New sys, before calling `continue`, should `yield()`
+
+
+
+
+- [x] Add `.start()`, don't start the watcher immediately
+    - [x] Code
+    - [x] Documentation

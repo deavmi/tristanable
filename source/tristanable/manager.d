@@ -52,9 +52,6 @@ public final class Manager
 	{
 		/* TODO: Make sure the socket is in STREAM mode */
 		
-		/* Set this session as alive */
-		this.isAlive = true;
-
 		/* Set the socket */
 		this.socket = socket;
 
@@ -63,6 +60,18 @@ public final class Manager
 
 		/* Initialize the watcher */
 		watcher = new Watcher(this, socket, timeOut, newSys);
+	}
+
+	/**
+	* Starts the session (watcher)
+	*/
+	public void start()
+	{
+		/* Set this session as alive */
+		this.isAlive = true;
+
+		/* Start the watcher */
+		watcher.start();
 	}
 
 	public Queue getQueue(ulong tag)

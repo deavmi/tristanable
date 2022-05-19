@@ -43,11 +43,7 @@ public final class Watcher : Thread
 			initSelect();
 		}
 		
-
-		 this.timeOut = timeOut;
-
-		running = true;
-		start();
+		this.timeOut = timeOut;
 	}
 
  	/**
@@ -72,6 +68,8 @@ public final class Watcher : Thread
 
 	private void run()
 	{
+		running = true;
+
 		/* Continuously dequeue tristanable packets from socket */
 		while(true)
 		{
