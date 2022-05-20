@@ -35,9 +35,10 @@ public final class Watcher : Thread
 		super(&run);
 		this.manager = manager;
 		this.endpoint = endpoint;
+		this.newSys = newSys;
 
 		/* If we are to use the new system then initialize the socket sets */
-		if(this.newSys = newSys)
+		if(this.newSys)
 		{
 			this.timeOut = timeOut;
 			initSelect();
