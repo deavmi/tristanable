@@ -43,17 +43,23 @@ public final class Manager
 	private bool isAlive;
 
 
+	private bool onRecvQueue;
+
+
 	/**
 	* Constructs a new Manager with the given
 	* endpoint Socket
 	*
 	*/
-	this(Socket socket, Duration timeOut = dur!("msecs")(100), bool newSys = false)
+	this(Socket socket, Duration timeOut = dur!("msecs")(100), bool newSys = false, bool onRecvQueue = false)
 	{
 		/* TODO: Make sure the socket is in STREAM mode */
 		
 		/* Set the socket */
 		this.socket = socket;
+
+		/* Set whether this should have on-receive queue funtionality */
+		this.onRecvQueue = onRecvQueue;
 
 		/* Initialize the queues mutex */
 		queuesLock = new Mutex();
@@ -72,6 +78,11 @@ public final class Manager
 
 		/* Start the watcher */
 		watcher.start();
+	}
+
+	public bool isOnRecvQueue()
+	{
+		return onRecvQueue;
 	}
 
 	public Queue getQueue(ulong tag)
