@@ -1,10 +1,36 @@
 module tristanable.queue;
 
+import libsnooze;
+import core.sync.mutex : Mutex;
+
 public class Queue
 {
+    /** 
+     * Everytime a thread calls `.dequeue()` on this queue
+     * 
+     */
+    private Event event;
+
+    private QueueItem queue;
+    private Mutex queueLock;
+
+
     private this()
     {
+        this.queueLock = new Mutex();
+    }
 
+    public void dequeue()
+    {
+        // TODO: Make us wait on the event (optional with a time-out)
+
+        // TODO: Lock queue
+        queueLock.lock();
+
+        // TODO: Get item off queue
+
+        // TODO: Unlock queue
+        queueLock.unlock();
     }
 
     public static Queue newQueue(ulong queueID)
@@ -15,4 +41,9 @@ public class Queue
 
         return queue;
     }
+}
+
+public class QueueItem
+{
+    
 }

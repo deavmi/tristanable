@@ -4,7 +4,7 @@
 	],
 	"copyright": "Copyright © 2023, Tristan B. Kildaire",
 	"dependencies": {
-		"libsnooze": "0.2.5"
+		"libsnooze": "0.2.7"
 	},
 	"description": "Tag-based asynchronous messaging framework",
 	"license": "LGPL-3.0",
