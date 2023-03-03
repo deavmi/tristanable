@@ -2,11 +2,12 @@
 	"authors": [
 		"Tristan B. Velloza Kildaire"
 	],
+	"homepage": "https://deavmi.assigned.network/projects/tristanable",
 	"copyright": "Copyright © 2023, Tristan B. Kildaire",
 	"dependencies": {
 		"libsnooze": "0.2.9"
 	},
-	"description": "Tag-based asynchronous messaging framework",
+	"description": "Tristanable network message queuing framework",
 	"license": "LGPL-3.0",
 	"name": "tristanable",
 	"targetType": "library"
