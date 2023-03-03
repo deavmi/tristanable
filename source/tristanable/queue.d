@@ -17,7 +17,11 @@ public class Queue
 
     private this()
     {
+        /* Initialize the queue lock */
         this.queueLock = new Mutex();
+
+        /* Initialize the event */
+        this.event = new Event();
     }
 
     public void dequeue()
