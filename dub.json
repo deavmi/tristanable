@@ -5,7 +5,7 @@
 	"homepage": "https://deavmi.assigned.network/projects/tristanable",
 	"copyright": "Copyright © 2023, Tristan B. Kildaire",
 	"dependencies": {
-		"libsnooze": "0.2.9"
+		"libsnooze": "0.3.3"
 	},
 	"description": "Tristanable network message queuing framework",
 	"license": "LGPL-3.0",
