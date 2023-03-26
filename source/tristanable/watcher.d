@@ -24,7 +24,14 @@ public class Watcher : Thread
      */
     private Socket socket;
 
-
+    // TODO: make package-level in a way such
+    // ... that only Manager can access this constructor
+    // TODO: Add constructor doc
+    this(Manager manager, Socket socket)
+    {
+        this.manager = manager;
+        this.socket = socket;
+    }
 
     
     private void watch()
