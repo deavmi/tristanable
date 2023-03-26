@@ -61,3 +61,13 @@ public class Manager
         // TODO: Unlock queue
     }
 }
+
+
+unittest
+{
+    // TODO: Spawn server here
+
+    // TODO: wait for server to activate
+    // TODO: register tristanable quues
+    // TODO: make server then send something to us and chekc if queues active
+}
