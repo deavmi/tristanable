@@ -7,6 +7,7 @@ import std.socket;
 import tristanable.queue : Queue;
 import core.sync.mutex : Mutex;
 import tristanable.manager.watcher : Watcher;
+import tristanable.encoding : TaggedMessage;
 
 /** 
  * Manages a provided socket by spawning
@@ -67,6 +68,17 @@ public class Manager
         // TODO: Insert queue only if non-existent, else throw an exception
 
         // TODO: Unlock queue
+    }
+
+    public void sendMessage(TaggedMessage tag)
+    {
+        // TODO: Send the given message
+
+        // TODO: Encode into bytes; call it `x`
+
+        // TODO: Wrap `x` in bformat; call it `y`
+
+        // TODO: Do socket.send(`y`)
     }
 }
 
