@@ -55,7 +55,7 @@ DataMessage tristanEncoded = new DataMessage(tag, data);
 socket.send(encodeForSend(tristanEncoded));
 ```
 
-And let tristanable handle it! We even handle the message lengths and everything using another great project [bformat](http://deavmi.assigned.network/projects/bformat).
+And let tristanable handle it! We even handle the message lengths and everything using another great project [bformat](https://deavmi.assigned.network/projects/bformat).
 
 ## Format
 
