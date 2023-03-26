@@ -6,6 +6,7 @@ module tristanable.manager;
 import std.socket;
 import tristanable.queue : Queue;
 import core.sync.mutex : Mutex;
+import tristanable.watcher : Watcher;
 
 /** 
  * Manages a provided socket by spawning
@@ -29,6 +30,13 @@ public class Manager
      */
     private Queue[] queues;
     private Mutex queuesLock;
+
+    /** 
+     * Watcher which manages the socket and
+     * enqueues new messages into the respective
+     * quueue for us
+     */
+    private Watcher watcher;
 
     /** 
      * Constructs a new manager which will read from
