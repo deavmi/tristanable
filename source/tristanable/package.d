@@ -7,7 +7,7 @@ module tristanable;
  * Interface which manages a provided socket
  * and enqueuing and dequeuing of queues
  */
-public import tristanable.manager : Manager;
+public import tristanable.manager;
 
 // TODO: In future make `QueueItem` just `TaggedMessage`
 /**

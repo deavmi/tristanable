@@ -1,12 +1,12 @@
 /** 
  * Management of a tristanable instance
  */
-module tristanable.manager;
+module tristanable.manager.manager;
 
 import std.socket;
 import tristanable.queue : Queue;
 import core.sync.mutex : Mutex;
-import tristanable.watcher : Watcher;
+import tristanable.manager.watcher : Watcher;
 
 /** 
  * Manages a provided socket by spawning
@@ -49,6 +49,14 @@ public class Manager
     {
         this.socket = socket;
         this.queuesLock = new Mutex();
+        this.watcher = new Watcher(this, socket);
+    }
+
+    // TODO: comment
+    // Starts the watcher
+    public void start()
+    {
+        watcher.start();
     }
 
 

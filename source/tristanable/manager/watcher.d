@@ -1,7 +1,7 @@
-module tristanable.watcher;
+module tristanable.manager.watcher;
 
 import core.thread : Thread;
-import tristanable.manager : Manager;
+import tristanable.manager.manager : Manager;
 import std.socket;
 
 /** 
@@ -27,7 +27,7 @@ public class Watcher : Thread
     // TODO: make package-level in a way such
     // ... that only Manager can access this constructor
     // TODO: Add constructor doc
-    this(Manager manager, Socket socket)
+    package this(Manager manager, Socket socket)
     {
         this.manager = manager;
         this.socket = socket;
