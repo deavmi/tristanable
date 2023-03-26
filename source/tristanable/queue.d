@@ -1,6 +1,10 @@
 module tristanable.queue;
 
+// TODO: Examine the below import which seemingly fixes stuff for libsnooze
+import libsnooze.clib;
 import libsnooze;
+
+import tristanable.queueitem : QueueItem;
 import core.sync.mutex : Mutex;
 
 public class Queue
@@ -13,6 +17,11 @@ public class Queue
 
     private QueueItem queue;
     private Mutex queueLock;
+    
+    /** 
+     * This queue's unique ID
+     */
+    private ulong queueID;
 
 
     private this()
@@ -26,7 +35,15 @@ public class Queue
 
     public void dequeue()
     {
-        // TODO: Make us wait on the event (optional with a time-out)
+        try
+        {
+            // TODO: Make us wait on the event (optional with a time-out)
+            event.wait();
+        }
+        catch(SnoozeError snozErr)
+        {
+            // TODO: Add error handling for libsnooze exceptions here
+        }
 
         // TODO: Lock queue
         queueLock.lock();
@@ -45,9 +62,4 @@ public class Queue
 
         return queue;
     }
-}
-
-public class QueueItem
-{
-    
 }
