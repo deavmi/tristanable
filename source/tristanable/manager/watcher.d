@@ -3,6 +3,8 @@ module tristanable.manager.watcher;
 import core.thread : Thread;
 import tristanable.manager.manager : Manager;
 import std.socket;
+import bformat;
+import tristanable.encoding;
 
 /** 
  * Watches the socket on a thread of its own,
@@ -33,12 +35,25 @@ public class Watcher : Thread
         this.socket = socket;
     }
 
-    
+    /** 
+     * Watches the socket for incoming messages
+     * and decodes them on the fly, placing
+     * the final message in the respective queue
+     */    
     private void watch()
     {
         while(true)
         {
             // TODO: Implement me
+
+            /* Do a bformat read-and-decode */
+            byte[] wireTristan;
+            receiveMessage(socket, wireTristan);
+
+            /* Decode the received bytes into a tagged message */
+            TaggedMessage decodedMessage = TaggedMessage.decode(wireTristan);
+
+            
         }
     }
 }
