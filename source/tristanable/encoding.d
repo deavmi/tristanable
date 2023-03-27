@@ -19,6 +19,8 @@ public final class TaggedMessage
         this.data = data;
     }
 
+    private this() {}
+
     /** 
      * Decodes the wire-formatted tristanable bytes into an instance
      * of TaggedMessage whereby the tag and data can be seperately
@@ -31,13 +33,42 @@ public final class TaggedMessage
     public static TaggedMessage decode(byte[] encodedMessage)
     {
         /* The decoded message */
-        TaggedMessage decodedMessage;
+        TaggedMessage decodedMessage = new TaggedMessage();
 
-        /* Decoded tag */
+        /* The decoded tag */
+        ulong decodedTag;
+        
+        /* If on little endian then dump direct */
+        version(LittleEndian)
+        {
+            decodedTag = *cast(ulong*)encodedMessage.ptr;
+        }
+        /* If on big endian then reverse received 8 bytes */
+        else version(BigEndian)
+        {
+            /* Base of our tag */
+            byte* tagHighPtr = cast(byte*)decodedTag.ptr;
 
+            *(tagHighPtr+0) = encodedMessage[7];
+            *(tagHighPtr+1) = encodedMessage[6];
+            *(tagHighPtr+2) = encodedMessage[5];
+            *(tagHighPtr+3) = encodedMessage[4];
+            *(tagHighPtr+4) = encodedMessage[3];
+            *(tagHighPtr+5) = encodedMessage[2];
+            *(tagHighPtr+6) = encodedMessage[1];
+            *(tagHighPtr+7) = encodedMessage[0];
+        }
+        /* Blessed is the fruit of thy womb Jesus, hail Mary, mother of God, pray for our sinners - now and at the hour of our death - Amen */
+        else
+        {
+            pragma(msg, "Not too sure about tha 'ey 😳️");
+        }
 
+        /* Set the tag */
+        decodedMessage.setTag(decodedTag);
 
-        // TODO: Implement me
+        /* Set the data *(9-th byte onwards) */
+        decodedMessage.setPayload(encodedMessage[8..$]);
 
         return decodedMessage;
     }
@@ -116,8 +147,21 @@ public final class TaggedMessage
     }
 }
 
+/**
+ * Test encoding and decoding
+ */
 unittest
 {
-    // TODO: Test encoding
-    // TODO: Test decoding
+    /* Setup testing data */
+    TaggedMessage testData = new TaggedMessage(420, [1,2,3]);
+
+    /* Encode */
+    byte[] encoded = testData.encode();
+
+    /* Decode */
+    TaggedMessage decoded = TaggedMessage.decode(encoded);
+
+    /* Now ensure that `decoded` == original `testData` */
+    assert(decoded.getTag() == testData.getTag);
+    assert(decoded.getPayload() == testData.getPayload());
 }
