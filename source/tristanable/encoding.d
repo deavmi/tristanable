@@ -10,15 +10,32 @@ module tristanable.encoding;
  */
 public final class TaggedMessage
 {
+    /** 
+     * This message's tag
+     */
     private ulong tag;
+
+    /** 
+     * The payload
+     */
     private byte[] data;
 
+    /** 
+     * Constructs a new TaggedMessage with the given tag and payload
+     *
+     * Params:
+     *   tag = the tag to use
+     *   data = the payload
+     */
     this(ulong tag, byte[] data)
     {
         this.tag = tag;
         this.data = data;
     }
 
+    /** 
+     * Parameterless constructor used for decoder
+     */
     private this() {}
 
     /** 
@@ -126,21 +143,43 @@ public final class TaggedMessage
         return encodedMessage;
     }
 
+    /** 
+     * Get the message's payload
+     *
+     * Returns: the payload
+     */
     public byte[] getPayload()
     {
         return data;
     }
 
+    /** 
+     * Get the message's tag
+     *
+     * Returns: the tag
+     */
     public ulong getTag()
     {
         return tag;
     }
 
+    /** 
+     * Set the message's payload
+     *
+     * Params:
+     *   newPayload = the payload to use
+     */
     public void setPayload(byte[] newPayload)
     {
         this.data = newPayload;
     }
 
+    /** 
+     * Set the message's tag
+     *
+     * Params:
+     *   newTag = the tag to use
+     */
     public void setTag(ulong newTag)
     {
         this.tag = newTag;
