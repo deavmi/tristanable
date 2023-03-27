@@ -1,11 +1,13 @@
 /** 
  * Management of a tristanable instance
  */
-module tristanable.manager;
+module tristanable.manager.manager;
 
 import std.socket;
 import tristanable.queue : Queue;
 import core.sync.mutex : Mutex;
+import tristanable.manager.watcher : Watcher;
+import tristanable.encoding : TaggedMessage;
 
 /** 
  * Manages a provided socket by spawning
@@ -31,6 +33,13 @@ public class Manager
     private Mutex queuesLock;
 
     /** 
+     * Watcher which manages the socket and
+     * enqueues new messages into the respective
+     * quueue for us
+     */
+    private Watcher watcher;
+
+    /** 
      * Constructs a new manager which will read from
      * this socket and file mail for us
      *
@@ -41,6 +50,14 @@ public class Manager
     {
         this.socket = socket;
         this.queuesLock = new Mutex();
+        this.watcher = new Watcher(this, socket);
+    }
+
+    // TODO: comment
+    // Starts the watcher
+    public void start()
+    {
+        watcher.start();
     }
 
 
@@ -52,4 +69,25 @@ public class Manager
 
         // TODO: Unlock queue
     }
+
+    public void sendMessage(TaggedMessage tag)
+    {
+        // TODO: Send the given message
+
+        // TODO: Encode into bytes; call it `x`
+
+        // TODO: Wrap `x` in bformat; call it `y`
+
+        // TODO: Do socket.send(`y`)
+    }
+}
+
+
+unittest
+{
+    // TODO: Spawn server here
+
+    // TODO: wait for server to activate
+    // TODO: register tristanable quues
+    // TODO: make server then send something to us and chekc if queues active
 }
