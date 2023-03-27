@@ -64,8 +64,8 @@ And let tristanable handle it! We even handle the message lengths and everything
 ```
 
 ## Using tristanable in your D project
-You can easily add the library (source-based) to your project by running the following command in your
-project's root:
+
+You can easily add the library (source-based) to your project by running the following command in your project's root:
 
 ```bash
 dub add tristanable
