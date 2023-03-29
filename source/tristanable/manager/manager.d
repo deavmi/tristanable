@@ -8,6 +8,8 @@ import tristanable.queue : Queue;
 import core.sync.mutex : Mutex;
 import tristanable.manager.watcher : Watcher;
 import tristanable.encoding : TaggedMessage;
+import tristanable.exceptions;
+import std.container.slist : SList;
 
 /** 
  * Manages a provided socket by spawning
@@ -29,7 +31,7 @@ public class Manager
      *
      * NOTE: Make a ulong map to this later
      */
-    private Queue[] queues;
+    private SList!(Queue) queues;
     private Mutex queuesLock;
 
     /** 
@@ -60,14 +62,73 @@ public class Manager
         watcher.start();
     }
 
+    /** 
+     * Retrieves the queue mathcing the provided id
+     *
+     * Params:
+     *   id = the id to lookup by
+     * Returns: the Queue
+     * Throws: TristanableException if the queue is not found
+     */
+    public Queue getQueue(ulong id)
+    {
+        /* The found queue */
+        Queue queue;
+
+        /* Lock the queue of queues */
+        queuesLock.lock();
+
+        /* On return or error */
+        scope(exit)
+        {
+            /* Unlock the queue of queues */
+            queuesLock.unlock();
+        }
+
+        /* Search for the queue */
+        foreach(Queue curQueue; queues)
+        {
+            if(curQueue.getID() == id)
+            {
+                queue = curQueue;
+                break;
+            }
+        }
+
+        /* If no queue is found then throw an error */
+        if(queue is null)
+        {
+            throw new TristanableException(ErrorType.QUEUE_NOT_FOUND);
+        }
+
+        return queue;
+    }
 
     public void registerQueue(Queue queue)
     {
-        // TODO: Lock queue
+        /* Lock the queue of queues */
+        queuesLock.lock();
+
+        /* On return or error */
+        scope(exit)
+        {
+            /* Unlock the queue of queues */
+            queuesLock.unlock();
+        }
 
         // TODO: Insert queue only if non-existent, else throw an exception
 
-        // TODO: Unlock queue
+        /* Search for the queue, throw an exception if it exists */
+        foreach(Queue curQueue; queues)
+        {
+            if(curQueue.getID() == queue.getID())
+            {
+                throw new TristanableException(ErrorType.QUEUE_ALREADY_EXISTS);
+            }
+        }
+
+        /* Insert the queue as it does not exist */
+        queues.insertAfter(queues[], queue);
     }
 
     public void sendMessage(TaggedMessage tag)
@@ -90,4 +151,53 @@ unittest
     // TODO: wait for server to activate
     // TODO: register tristanable quues
     // TODO: make server then send something to us and chekc if queues active
+}
+
+/**
+ * Test retrieving a queue which does not
+ * exist
+ */
+unittest
+{
+    /* Create a manager */
+    Manager manager = new Manager(null);
+
+    /* Shouldn't be found */
+    try
+    {
+        manager.getQueue(69);
+        assert(false);
+    }
+    catch(TristanableException e)
+    {
+        assert(e.getError() == ErrorType.QUEUE_NOT_FOUND);
+    }
+}
+
+/**
+ * Test registering a queue and then fetching it
+ */
+unittest
+{
+    /* Create a manager */
+    Manager manager = new Manager(null);
+
+    /* Create a new queue with tag 69 */
+    Queue queue = new Queue(69);
+
+    try
+    {
+        /* Register the queue */
+        manager.registerQueue(queue);
+
+        /* Fetch the queue */
+        Queue fetchedQueue = manager.getQueue(69);
+
+        /* Ensure the queue we fetched is the one we stored (the references would be equal) */
+        assert(fetchedQueue == queue);
+    }
+    catch(TristanableException e)
+    {
+        assert(false);
+    }
 }

@@ -24,13 +24,16 @@ public class Queue
     private ulong queueID;
 
 
-    private this()
+    this(ulong queueID)
     {
         /* Initialize the queue lock */
         this.queueLock = new Mutex();
 
         /* Initialize the event */
         this.event = new Event();
+
+        /* Set the queue id */
+        this.queueID = queueID;
     }
 
     public void dequeue()
@@ -54,12 +57,8 @@ public class Queue
         queueLock.unlock();
     }
 
-    public static Queue newQueue(ulong queueID)
+    public ulong getID()
     {
-        Queue queue;
-
-        // TODO: Implement me
-
-        return queue;
+        return queueID;
     }
 }
