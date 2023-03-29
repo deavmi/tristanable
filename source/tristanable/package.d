@@ -24,7 +24,7 @@ public import tristanable.queueitem : QueueItem;
 /**
  * Error handling type definitions
  */
-public import tristanable.exceptions : TristanableException, Error;
+public import tristanable.exceptions : TristanableException, ErrorType;
 
 /**
  * Encoding/decoding of the tristanable format
