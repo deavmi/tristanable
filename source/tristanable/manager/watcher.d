@@ -44,8 +44,6 @@ public class Watcher : Thread
     {
         while(true)
         {
-            // TODO: Implement me
-
             /* Do a bformat read-and-decode */
             byte[] wireTristan;
             receiveMessage(socket, wireTristan);
@@ -53,7 +51,7 @@ public class Watcher : Thread
             /* Decode the received bytes into a tagged message */
             TaggedMessage decodedMessage = TaggedMessage.decode(wireTristan);
 
-            
+            // TODO: Implement me
         }
     }
 }
