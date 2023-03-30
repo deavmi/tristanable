@@ -4,7 +4,6 @@ module tristanable.queue;
 import libsnooze.clib;
 import libsnooze;
 
-import tristanable.queueitem : QueueItem;
 import core.sync.mutex : Mutex;
 import std.container.slist : SList;
 import tristanable.encoding;

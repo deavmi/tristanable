@@ -16,12 +16,6 @@ public import tristanable.manager;
 public import tristanable.queue : Queue;
 
 /**
- * A decoded item that is placed on the queue
- * for consumption
- */
-public import tristanable.queueitem : QueueItem;
-
-/**
  * Error handling type definitions
  */
 public import tristanable.exceptions : TristanableException, ErrorType;
