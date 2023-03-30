@@ -4,7 +4,8 @@ public enum ErrorType
 {
     QueueExists,
     QUEUE_NOT_FOUND,
-    QUEUE_ALREADY_EXISTS
+    QUEUE_ALREADY_EXISTS,
+    NO_DEFAULT_QUEUE
 }
 
 public class TristanableException : Exception
