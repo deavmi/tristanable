@@ -116,8 +116,6 @@ public class Manager
             queuesLock.unlock();
         }
 
-        // TODO: Insert queue only if non-existent, else throw an exception
-
         /* Search for the queue, throw an exception if it exists */
         foreach(Queue curQueue; queues)
         {
