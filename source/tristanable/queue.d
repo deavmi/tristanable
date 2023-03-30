@@ -6,6 +6,8 @@ import libsnooze;
 
 import tristanable.queueitem : QueueItem;
 import core.sync.mutex : Mutex;
+import std.container.slist : SList;
+import tristanable.encoding;
 
 public class Queue
 {
@@ -15,7 +17,7 @@ public class Queue
      */
     private Event event;
 
-    private QueueItem queue;
+    private SList!(TaggedMessage) queue;
     private Mutex queueLock;
     
     /** 
@@ -36,8 +38,15 @@ public class Queue
         this.queueID = queueID;
     }
 
-    public void dequeue()
+    public void enqueue(TaggedMessage message)
     {
+        // TODO: Implement me
+    }
+
+    public TaggedMessage dequeue()
+    {
+        TaggedMessage message;
+
         try
         {
             // TODO: Make us wait on the event (optional with a time-out)
@@ -55,6 +64,8 @@ public class Queue
 
         // TODO: Unlock queue
         queueLock.unlock();
+
+        return message;
     }
 
     public ulong getID()
