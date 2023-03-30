@@ -1,5 +1,7 @@
 module tristanable.encoding;
 
+import std.conv : to;
+
 /** 
  * Represents a tagged message that has been decoded
  * from its raw byte encoding, this is a tuple of
@@ -183,6 +185,16 @@ public final class TaggedMessage
     public void setTag(ulong newTag)
     {
         this.tag = newTag;
+    }
+
+    /** 
+     * Returns a string representation of the TaggedMessage
+     *
+     * Returns: the string represenation
+     */
+    public override string toString()
+    {
+        return "TMessage [Tag: "~to!(string)(tag)~", Payload: "~to!(string)(data)~"]";
     }
 }
 
