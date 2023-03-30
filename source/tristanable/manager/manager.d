@@ -104,6 +104,14 @@ public class Manager
         return queue;
     }
 
+    /** 
+     * Registers the given queue with the manager
+     *
+     * Params:
+     *   queue = the queue to register
+     * Throws:
+     *   TristanableException if a queue with the provided id already exists
+     */
     public void registerQueue(Queue queue)
     {
         /* Lock the queue of queues */
