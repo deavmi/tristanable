@@ -35,6 +35,11 @@ public class Manager
     private Mutex queuesLock;
 
     /** 
+     * Default queue
+     */
+    private Queue defaultQueue;
+
+    /** 
      * Watcher which manages the socket and
      * enqueues new messages into the respective
      * quueue for us
@@ -73,6 +78,29 @@ public class Manager
     public Queue getQueue(ulong id)
     {
         /* The found queue */
+        Queue queue = getQueue_nothrow(id);
+
+        /* If no queue is found then throw an error */
+        if(queue is null)
+        {
+            throw new TristanableException(ErrorType.QUEUE_NOT_FOUND);
+        }
+
+        return queue;
+    }
+
+    /** 
+     * Retrieves the queue mathcing the provided id
+     *
+     * This is the nothrow version
+     *
+     * Params:
+     *   id = the id to lookup by
+     * Returns: the Queue if found, null otherwise
+     */
+    public Queue getQueue_nothrow(ulong id)
+    {
+        /* The found queue */
         Queue queue;
 
         /* Lock the queue of queues */
@@ -95,14 +123,10 @@ public class Manager
             }
         }
 
-        /* If no queue is found then throw an error */
-        if(queue is null)
-        {
-            throw new TristanableException(ErrorType.QUEUE_NOT_FOUND);
-        }
-
         return queue;
     }
+
+    
 
     /** 
      * Registers the given queue with the manager
@@ -136,6 +160,61 @@ public class Manager
         /* Insert the queue as it does not exist */
         queues.insertAfter(queues[], queue);
     }
+
+    /** 
+     * Sets the default queue
+     *
+     * The default queue, when set/enabled, is the queue that will
+     * be used to enqueue messages that have a tag which doesn't
+     * match any of the normally registered queues.
+     *
+     * Please note that the ID of the queue passed in here does not
+     * mean anything in this context; only the queuing facilities
+     * of the Queue object are used
+     *
+     * Params:
+     *   queue = the default queue to use
+     */
+    public void setDefaultQueue(Queue queue)
+    {
+        this.defaultQueue = queue;
+    }
+
+    /** 
+     * Returns the default queue
+     *
+     * Returns: the default queue
+     * Throws:
+     *   TristanableException if there is no default queue
+     */
+    public Queue getDefaultQueue()
+    {
+        /* The potential default queue */
+        Queue potentialDefaultQueue = getDefaultQueue_nothrow();
+
+        if(potentialDefaultQueue is null)
+        {
+            throw new TristanableException(ErrorType.NO_DEFAULT_QUEUE);
+        }
+
+        return potentialDefaultQueue;
+    }
+
+
+    /** 
+     * Returns the default queue
+     *
+     * This is the nothrow version
+     *
+     * Returns: the default queue if found, null otherwise
+     */
+    public Queue getDefaultQueue_nothrow()
+    {
+        return defaultQueue;
+    }
+  
+
+
 
     public void sendMessage(TaggedMessage tag)
     {
@@ -178,6 +257,9 @@ unittest
     {
         assert(e.getError() == ErrorType.QUEUE_NOT_FOUND);
     }
+
+    /* Shouldn't be found */
+    assert(manager.getQueue_nothrow(69) is null);
 }
 
 /**
@@ -205,5 +287,36 @@ unittest
     catch(TristanableException e)
     {
         assert(false);
+    }
+
+    /* Should be found */
+    assert(manager.getQueue_nothrow(69) !is null);
+}
+
+/**
+ * tests registering a queue and then registering
+ * another queue with the same id
+ */
+unittest
+{
+    /* Create a manager */
+    Manager manager = new Manager(null);
+
+    /* Create a new queue with tag 69 */
+    Queue queue = new Queue(69);
+
+    /* Register the queue */
+    manager.registerQueue(queue);
+
+    try
+    {
+        /* Register the queue (try again) */
+        manager.registerQueue(queue);
+
+        assert(false);
+    }
+    catch(TristanableException e)
+    {
+        assert(e.getError() == ErrorType.QUEUE_ALREADY_EXISTS);
     }
 }

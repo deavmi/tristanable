@@ -5,6 +5,8 @@ import tristanable.manager.manager : Manager;
 import std.socket;
 import bformat;
 import tristanable.encoding;
+import tristanable.exceptions;
+import tristanable.queue;
 
 /** 
  * Watches the socket on a thread of its own,
@@ -33,6 +35,8 @@ public class Watcher : Thread
     {
         this.manager = manager;
         this.socket = socket;
+
+        super(&watch);
     }
 
     /** 
@@ -46,12 +50,103 @@ public class Watcher : Thread
         {
             /* Do a bformat read-and-decode */
             byte[] wireTristan;
-            receiveMessage(socket, wireTristan);
+            receiveMessage(socket, wireTristan); // TODO: Add a check for the status of read
 
             /* Decode the received bytes into a tagged message */
             TaggedMessage decodedMessage = TaggedMessage.decode(wireTristan);
+            import std.stdio;
+            writeln("Watcher received: ", decodedMessage);
+
+            /* Search for the queue with the id provided */
+            ulong messageTag = decodedMessage.getTag();
+            Queue potentialQueue = manager.getQueue_nothrow(messageTag);
+
+            /* If a queue can be found */
+            if(potentialQueue !is null)
+            {
+                /* Enqueue the message */
+                potentialQueue.enqueue(decodedMessage);
+            }
+            /* If the queue if not found */
+            else
+            {
+                /**
+                 * Look for a default queue, and if one is found
+                 * then enqueue the message there. Otherwise, drop
+                 * it by simply doing nothing.
+                 */
+                try
+                {
+                    potentialQueue = manager.getDefaultQueue();
+
+                    /* Enqueue the message */
+                    potentialQueue.enqueue(decodedMessage);
+                }
+                catch(TristanableException e) {}
+            }
+
+            
 
             // TODO: Implement me
         }
     }
+}
+
+
+unittest
+{
+    import std.socket;
+    import std.stdio;
+
+    Address serverAddress = parseAddress("::1", 0);
+    Socket server = new Socket(AddressFamily.INET6, SocketType.STREAM, ProtocolType.TCP);
+    server.bind(serverAddress);
+    server.listen(0);
+
+    class ServerThread : Thread
+    {
+        this()
+        {
+            super(&worker);
+        }
+
+        private void worker()
+        {
+            Socket clientSocket = server.accept();
+
+            /** 
+             * Create a tagged message to send
+             *
+             * tag 69 payload Hello
+             */
+            TaggedMessage message = new TaggedMessage(69, cast(byte[])"Hello");
+            byte[] tEncoded = message.encode();
+            writeln("server send status: ", sendMessage(clientSocket, tEncoded));
+
+            writeln("server send [done]");
+            
+        }
+    }
+
+    ServerThread serverThread = new ServerThread();
+    serverThread.start();
+
+    Socket client = new Socket(AddressFamily.INET6, SocketType.STREAM, ProtocolType.TCP);
+    
+    writeln(server.localAddress);
+
+
+    Manager manager = new Manager(client);
+
+    Queue sixtyNine = new Queue(69);
+    manager.registerQueue(sixtyNine);
+
+
+    client.connect(server.localAddress);
+    manager.start();
+
+    
+    
+
+    // while(true){}
 }
