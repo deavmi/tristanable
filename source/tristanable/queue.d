@@ -115,8 +115,7 @@ public class Queue
             /* Lock the item queue */
             queueLock.lock();
 
-            // TODO: Get item off queue (if anything)
-            // ... if nothing is available then do wait again
+            /* Consume the front of the queue (if non-empty) */
             if(!queue.empty())
             {
                 /* Pop the front item off */
