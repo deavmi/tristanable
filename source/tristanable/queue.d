@@ -8,6 +8,12 @@ import core.sync.mutex : Mutex;
 import std.container.slist : SList;
 import tristanable.encoding;
 
+version(unittest)
+{
+   import std.stdio;
+   import std.conv : to;
+}
+
 public class Queue
 {
     /** 
@@ -37,34 +43,94 @@ public class Queue
         this.queueID = queueID;
     }
 
+    /** 
+     * Enqueues the provided tagged message onto this queue
+     * and then wakes up any thread that has called dequeue
+     * on this queue as well
+     *
+     * Params:
+     *   message = the TaggedMessage to enqueue
+     */
     public void enqueue(TaggedMessage message)
     {
-        // TODO: Implement me
-    }
+        version(unittest)
+        {
+            writeln("queue["~to!(string)(queueID)~"]: Enqueuing '"~to!(string)(message)~"'...");
+        }
 
-    public TaggedMessage dequeue()
-    {
-        TaggedMessage message;
+        scope(exit)
+        {
+            version(unittest)
+            {
+                writeln("queue["~to!(string)(queueID)~"]: Enqueued '"~to!(string)(message)~"'!");
+            }
 
+            /* Unlock the item queue */
+            queueLock.unlock();
+        }
+
+        /* Lock the item queue */
+        queueLock.lock();
+
+        /* Add the item to the queue */
+        queue.insertAfter(queue[], message);
+
+        /* Wake up anyone wanting to dequeue from us */
         try
         {
             // TODO: Make us wait on the event (optional with a time-out)
-            event.wait();
+            event.notifyAll();
         }
         catch(SnoozeError snozErr)
         {
             // TODO: Add error handling for libsnooze exceptions here
         }
+    }
 
-        // TODO: Lock queue
-        queueLock.lock();
+    // TODO: Make a version of this which can time out
 
-        // TODO: Get item off queue
+    /** 
+     * Blocks till a message can be dequeued from this queue
+     *
+     * Returns: the dequeued TaggedMessage
+     */
+    public TaggedMessage dequeue()
+    {
+        /* The dequeued message */
+        TaggedMessage dequeuedMessage;
 
-        // TODO: Unlock queue
-        queueLock.unlock();
+        /* Block till we dequeue a message successfully */
+        while(dequeuedMessage is null)
+        {
+            try
+            {
+                // TODO: Make us wait on the event (optional with a time-out)
+                event.wait();
+            }
+            catch(SnoozeError snozErr)
+            {
+                // TODO: Add error handling for libsnooze exceptions here
+            }
 
-        return message;
+            /* Lock the item queue */
+            queueLock.lock();
+
+            // TODO: Get item off queue (if anything)
+            // ... if nothing is available then do wait again
+            if(!queue.empty())
+            {
+                /* Pop the front item off */
+                dequeuedMessage = queue.front();
+
+                /* Remove the front item from the queue */
+                queue.linearRemoveElement(dequeuedMessage);
+            }
+
+            /* Unlock the item queue */
+            queueLock.unlock();
+        }
+
+        return dequeuedMessage;
     }
 
     public ulong getID()
