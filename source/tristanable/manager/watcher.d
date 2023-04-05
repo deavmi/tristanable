@@ -97,6 +97,7 @@ unittest
 {
     import std.socket;
     import std.stdio;
+    import core.thread;
 
     Address serverAddress = parseAddress("::1", 0);
     Socket server = new Socket(AddressFamily.INET6, SocketType.STREAM, ProtocolType.TCP);
@@ -113,6 +114,9 @@ unittest
         private void worker()
         {
             Socket clientSocket = server.accept();
+
+            Thread.sleep(dur!("seconds")(2));
+            writeln("Server start");
 
             /** 
              * Create a tagged message to send
@@ -139,6 +143,27 @@ unittest
     Manager manager = new Manager(client);
 
     Queue sixtyNine = new Queue(69);
+
+    class WaitingThread : Thread
+    {
+        private Queue testQueue;
+
+        this(Queue testQueue)
+        {
+            super(&worker);
+            this.testQueue = testQueue;
+        }
+
+        private void worker()
+        {
+            writeln("WaitingThread: Dequeue() blocking...");
+            TaggedMessage dequeuedMessage = testQueue.dequeue();
+            writeln("WaitingThread: Got '"~dequeuedMessage.toString()~"'");
+        }
+    }
+
+    WaitingThread waiting = new WaitingThread(sixtyNine);
+    waiting.start();
     manager.registerQueue(sixtyNine);
 
 
