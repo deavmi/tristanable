@@ -1,3 +1,6 @@
+/**
+ * A queue of queue items all of the same tag
+ */
 module tristanable.queue;
 
 // TODO: Examine the below import which seemingly fixes stuff for libsnooze

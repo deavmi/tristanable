@@ -1,3 +1,6 @@
+/**
+ * Encoding/decoding of the tristanable format
+ */
 module tristanable.encoding;
 
 import std.conv : to;

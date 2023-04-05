@@ -1,3 +1,6 @@
+/**
+ * Error handling type definitions
+ */
 module tristanable.exceptions;
 
 public enum ErrorType
