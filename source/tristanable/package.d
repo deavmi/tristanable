@@ -9,7 +9,6 @@ module tristanable;
  */
 public import tristanable.manager;
 
-// TODO: In future make `QueueItem` just `TaggedMessage`
 /**
  * A queue of queue items all of the same tag
  */
