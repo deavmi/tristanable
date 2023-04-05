@@ -96,8 +96,21 @@ public class Queue
      */
     public TaggedMessage dequeue()
     {
+        version(unittest)
+        {
+            writeln("queue["~to!(string)(queueID)~"]: Dequeueing...");
+        }
+
         /* The dequeued message */
         TaggedMessage dequeuedMessage;
+
+        scope(exit)
+        {
+            version(unittest)
+            {
+                writeln("queue["~to!(string)(queueID)~"]: Dequeued '"~to!(string)(dequeuedMessage)~"'!");
+            }
+        }
 
         /* Block till we dequeue a message successfully */
         while(dequeuedMessage is null)
