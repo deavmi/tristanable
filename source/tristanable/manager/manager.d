@@ -67,6 +67,12 @@ public class Manager
         watcher.start();
     }
 
+    // Stops the watcher
+    public void stop()
+    {
+        watcher.shutdown();
+    }
+
     /**
      * Retrieves the queue mathcing the provided id
      *
@@ -126,7 +132,56 @@ public class Manager
         return queue;
     }
 
-    
+    /** 
+     * Get a new queue thatis unique in its tag
+     * (unused/not regustered yet), register it
+     * and then return it
+     *
+     * Returns: the newly registered Queue
+     */
+    public Queue getUniqueQueue()
+    {
+        /* The newly created queue */
+        Queue uniqueQueue;
+
+        /* Lock the queue of queues */
+        queuesLock.lock();
+
+        /* On return or error */
+        scope(exit)
+        {
+            /* Unlock the queue of queues */
+            queuesLock.unlock();
+        }
+
+        // TODO: Throw exception if all tags used
+        /* The unused tag */
+        ulong unusedTag = 0;
+
+        /* Try the current tag and ensure no queue uses it */
+        tagLoop: for(ulong curPotentialTag = 0; true; curPotentialTag++)
+        {
+            foreach(Queue curQueue; queues)
+            {
+                if(curQueue.getID() == curPotentialTag)
+                {
+                    continue tagLoop;
+                }
+            }
+
+            /* Then we have found a unique tag */
+            unusedTag = curPotentialTag;
+            break;
+        }
+
+        /* Create the queue */
+        uniqueQueue = new Queue(unusedTag);
+
+        /* Register it */
+        registerQueue(uniqueQueue);
+
+        return uniqueQueue;
+    }
 
     /** 
      * Registers the given queue with the manager
