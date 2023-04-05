@@ -67,7 +67,7 @@ public class Manager
         watcher.start();
     }
 
-    /** 
+    /**
      * Retrieves the queue mathcing the provided id
      *
      * Params:
