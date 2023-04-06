@@ -148,7 +148,7 @@ unittest
         {
             Socket clientSocket = server.accept();
 
-            Thread.sleep(dur!("seconds")(4));
+            Thread.sleep(dur!("seconds")(7));
             writeln("Server start");
 
             /** 
