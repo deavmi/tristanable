@@ -16,7 +16,7 @@ public struct Config
      * and if so, then register it for
      * us before encoding-and-sending
      */
-    public bool registerOnSend = false;
+    public bool registerOnSend;
 }
 
 /** 
@@ -27,5 +27,8 @@ public struct Config
  */
 public Config defaultConfig()
 {
-    return Config();
+    Config config;
+    config.registerOnSend = false;
+
+    return config;
 }
