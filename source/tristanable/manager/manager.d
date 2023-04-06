@@ -10,6 +10,8 @@ import tristanable.manager.watcher : Watcher;
 import tristanable.encoding : TaggedMessage;
 import tristanable.exceptions;
 import std.container.slist : SList;
+import tristanable.manager.config;
+import bformat.sockets : bformatSendMessage = sendMessage;
 
 /** 
  * Manages a provided socket by spawning
@@ -21,6 +23,11 @@ import std.container.slist : SList;
  */
 public class Manager
 {
+    /** 
+     * Configuration
+     */
+    private Config config;
+
     /** 
      * The underlying socket to read from
      */
@@ -53,10 +60,11 @@ public class Manager
      * Params:
      *   socket = the underlying socket to use
      */
-    this(Socket socket)
+    this(Socket socket, Config config = defaultConfig())
     {
         this.socket = socket;
         this.queuesLock = new Mutex();
+        this.config = config;
         this.watcher = new Watcher(this, socket);
     }
 
@@ -193,6 +201,25 @@ public class Manager
      */
     public void registerQueue(Queue queue)
     {
+        /* Try to register the queue */
+        bool status = registerQueue_nothrow(queue);
+
+        /* If registration was not successful */
+        if(!status)
+        {
+            throw new TristanableException(ErrorType.QUEUE_ALREADY_EXISTS);
+        }
+    }
+
+    /** 
+     * Registers the given queue with the manager
+     *
+     * Params:
+     *   queue = the queue to register
+     * Returns: true if registration was successful, false otherwise
+     */
+    public bool registerQueue_nothrow(Queue queue)
+    {
         /* Lock the queue of queues */
         queuesLock.lock();
 
@@ -208,12 +235,16 @@ public class Manager
         {
             if(curQueue.getID() == queue.getID())
             {
-                throw new TristanableException(ErrorType.QUEUE_ALREADY_EXISTS);
+                /* Registration failed */
+                return false;
             }
         }
 
         /* Insert the queue as it does not exist */
         queues.insertAfter(queues[], queue);
+
+        /* Registration was a success */
+        return true;
     }
 
     /** 
@@ -267,19 +298,34 @@ public class Manager
     {
         return defaultQueue;
     }
-  
 
-
-
-    public void sendMessage(TaggedMessage tag)
+    /** 
+     * Sends the provided message over the socket
+     *
+     * Params:
+     *   message = the TaggedMessage to send
+     */
+    public void sendMessage(TaggedMessage message)
     {
-        // TODO: Send the given message
+        /**
+         * If a queue with the tag of the message does
+         * not exist, then register it if the config
+         * option was enabled
+         */
+        if(config.registerOnSend)
+        {
+            /* Create a Queue with the tag */
+            Queue createdQueue = new Queue(message.getTag());
 
-        // TODO: Encode into bytes; call it `x`
+            /* Attempt to register the queue */
+            registerQueue_nothrow(createdQueue);
+        }
 
-        // TODO: Wrap `x` in bformat; call it `y`
+        /* Encode the message */
+        byte[] encodedMessage = message.encode();
 
-        // TODO: Do socket.send(`y`)
+        /* Send it using bformat (encode-and-send) */
+        bformatSendMessage(socket, encodedMessage);
     }
 }
 
@@ -380,6 +426,7 @@ unittest
     Queue queue2 = manager.getUniqueQueue();
     Queue queue3 = manager.getUniqueQueue();
 
+    /* The queues should have tags [0, 1, 2] respectively */
     assert(queue1.getID() == 0);
     assert(queue2.getID() == 1);
     assert(queue3.getID() == 2);
