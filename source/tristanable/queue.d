@@ -10,6 +10,7 @@ import libsnooze;
 import core.sync.mutex : Mutex;
 import std.container.slist : SList;
 import tristanable.encoding;
+import core.thread : dur;
 
 version(unittest)
 {
@@ -34,6 +35,15 @@ public class Queue
     private ulong queueID;
 
 
+    /** 
+     * Constructs a new Queue and immediately sets up the notification
+     * sub-system for the calling thread (the thread constructing this
+     * object) which ensures that a call to dequeue will immediately
+     * unblock on the first message received under this tag
+     *
+     * Params:
+     *   queueID = the id to use for this queue
+     */
     this(ulong queueID)
     {
         /* Initialize the queue lock */
@@ -44,6 +54,9 @@ public class Queue
 
         /* Set the queue id */
         this.queueID = queueID;
+
+        /* Ensure pipe existence (see https://deavmi.assigned.network/git/deavmi/tristanable/issues/5) */
+        event.wait(dur!("seconds")(0));
     }
 
     /** 

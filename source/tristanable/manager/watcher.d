@@ -126,7 +126,7 @@ unittest
             /** 
              * Create a tagged message to send
              *
-             * tag 42 payload Hello
+             * tag 42 payload Cucumber 😳️
              */
             TaggedMessage message = new TaggedMessage(42, cast(byte[])"Cucumber 😳️");
             byte[] tEncoded = message.encode();
@@ -140,6 +140,17 @@ unittest
              * tag 69 payload Hello
              */
             message = new TaggedMessage(69, cast(byte[])"Hello");
+            tEncoded = message.encode();
+            writeln("server send status: ", sendMessage(clientSocket, tEncoded));
+
+            writeln("server send [done]");
+
+            /** 
+             * Create a tagged message to send
+             *
+             * tag 69 payload Bye
+             */
+            message = new TaggedMessage(69, cast(byte[])"Bye");
             tEncoded = message.encode();
             writeln("server send status: ", sendMessage(clientSocket, tEncoded));
 
@@ -176,9 +187,24 @@ unittest
     TaggedMessage dequeuedMessage = sixtyNine.dequeue();
     writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
     assert(dequeuedMessage.getTag() == 69);
-    assert(dequeuedMessage.getPayload() == "Hello");
+    assert(dequeuedMessage.getPayload() == cast(byte[])"Hello");
+
+    /* Block on the unittest thread for a received message */
+    writeln("unittest thread: Dequeue() blocking...");
+    dequeuedMessage = sixtyNine.dequeue();
+    writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+    assert(dequeuedMessage.getTag() == 69);
+    assert(dequeuedMessage.getPayload() == cast(byte[])"Bye");
+
+    /* Block on the unittest thread for a received message */
+    writeln("unittest thread: Dequeue() blocking...");
+    dequeuedMessage = fortyTwo.dequeue();
+    writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+    assert(dequeuedMessage.getTag() == 42);
+    assert(dequeuedMessage.getPayload() == cast(byte[])"Cucumber 😳️");
     
     
 
-    // while(true){}
+    /* Stop the manager */
+    manager.stop();
 }
