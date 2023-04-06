@@ -349,7 +349,7 @@ unittest
 }
 
 /**
- * tests registering a queue and then registering
+ * Tests registering a queue and then registering
  * another queue with the same id
  */
 unittest
@@ -374,4 +374,23 @@ unittest
     {
         assert(e.getError() == ErrorType.QUEUE_ALREADY_EXISTS);
     }
+}
+
+/**
+ * Tests registering a queue using the "next available queue"
+ * method
+ */
+unittest
+{
+    /* Create a manager */
+    Manager manager = new Manager(null);
+
+    /* Get the next 3 available queues */
+    Queue queue1 = manager.getUniqueQueue();
+    Queue queue2 = manager.getUniqueQueue();
+    Queue queue3 = manager.getUniqueQueue();
+
+    assert(queue1.getID() == 0);
+    assert(queue2.getID() == 1);
+    assert(queue3.getID() == 2);
 }
