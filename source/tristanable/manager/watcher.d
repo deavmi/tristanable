@@ -125,7 +125,11 @@ public class Watcher : Thread
     }
 }
 
-
+/** 
+ * Set up a server which will send some tagged messages to us (the client),
+ * where we have setup a `Manager` to watch the queues with tags `42` and `69`,
+ * we then dequeue some messages from both queus. Finally, we shut down the manager.
+ */
 unittest
 {
     import std.socket;
