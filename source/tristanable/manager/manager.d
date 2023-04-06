@@ -72,7 +72,7 @@ public class Manager
     // Starts the watcher
     public void start()
     {
-        watcher.start();
+        watcher.startWatcher();
     }
 
     // Stops the watcher
