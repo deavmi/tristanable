@@ -90,6 +90,11 @@ public class Watcher : Thread
             // TODO: Implement me
         }
     }
+
+    package void shutdown()
+    {
+
+    }
 }
 
 
@@ -115,16 +120,27 @@ unittest
         {
             Socket clientSocket = server.accept();
 
-            Thread.sleep(dur!("seconds")(2));
+            Thread.sleep(dur!("seconds")(4));
             writeln("Server start");
+
+            /** 
+             * Create a tagged message to send
+             *
+             * tag 42 payload Hello
+             */
+            TaggedMessage message = new TaggedMessage(42, cast(byte[])"Cucumber 😳️");
+            byte[] tEncoded = message.encode();
+            writeln("server send status: ", sendMessage(clientSocket, tEncoded));
+
+            writeln("server send [done]");
 
             /** 
              * Create a tagged message to send
              *
              * tag 69 payload Hello
              */
-            TaggedMessage message = new TaggedMessage(69, cast(byte[])"Hello");
-            byte[] tEncoded = message.encode();
+            message = new TaggedMessage(69, cast(byte[])"Hello");
+            tEncoded = message.encode();
             writeln("server send status: ", sendMessage(clientSocket, tEncoded));
 
             writeln("server send [done]");
@@ -143,33 +159,24 @@ unittest
     Manager manager = new Manager(client);
 
     Queue sixtyNine = new Queue(69);
+    Queue fortyTwo = new Queue(42);
 
-    class WaitingThread : Thread
-    {
-        private Queue testQueue;
-
-        this(Queue testQueue)
-        {
-            super(&worker);
-            this.testQueue = testQueue;
-        }
-
-        private void worker()
-        {
-            writeln("WaitingThread: Dequeue() blocking...");
-            TaggedMessage dequeuedMessage = testQueue.dequeue();
-            writeln("WaitingThread: Got '"~dequeuedMessage.toString()~"'");
-        }
-    }
-
-    WaitingThread waiting = new WaitingThread(sixtyNine);
-    waiting.start();
     manager.registerQueue(sixtyNine);
+    manager.registerQueue(fortyTwo);
 
 
+    /* Connect our socket to the server */
     client.connect(server.localAddress);
+
+    /* Start the manager and let it manage the socket */
     manager.start();
 
+    /* Block on the unittest thread for a received message */
+    writeln("unittest thread: Dequeue() blocking...");
+    TaggedMessage dequeuedMessage = sixtyNine.dequeue();
+    writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+    assert(dequeuedMessage.getTag() == 69);
+    assert(dequeuedMessage.getPayload() == "Hello");
     
     
 
