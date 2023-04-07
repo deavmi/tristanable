@@ -3,6 +3,8 @@
  */
 module tristanable.exceptions;
 
+import std.conv : to;
+
 /** 
  * The type of sub-error of the `TristanableException`
  */
@@ -31,16 +33,29 @@ public enum ErrorType
  */
 public class TristanableException : Exception
 {
+    /** 
+     * The sub-error type
+     */
     private ErrorType err;
     
+    /** 
+     * Constructs a new `TristanableException` with the provided
+     * sub-error type
+     *
+     * Params:
+     *   err = the `ErrorType`
+     */
     this(ErrorType err)
     {
-        // TODO: Do this
-        super("TODO: Do this");
-
+        super(this.classinfo.name~": "~to!(string)(err));
         this.err = err;
     }
 
+    /** 
+     * Retrieve the sub-error type
+     *
+     * Returns: the sub-error type as a `ErrorType`
+     */
     public ErrorType getError()
     {
         return err;
