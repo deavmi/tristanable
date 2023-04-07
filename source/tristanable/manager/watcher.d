@@ -129,6 +129,10 @@ public class Watcher : Thread
         }
     }
 
+    /** 
+     * Shuts down the watcher, unblocks the blocking read in the loop
+     * resulting in the watcher thread ending
+     */
     package void shutdown()
     {
         /* Unblock all calls to `recv()` and disallow future ones */
