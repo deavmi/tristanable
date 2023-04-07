@@ -35,10 +35,12 @@ public class Manager
 
     /** 
      * Currently registered queues
-     *
-     * NOTE: Make a ulong map to this later
      */
     private SList!(Queue) queues;
+
+    /** 
+     * Lock for currently registered queues
+     */
     private Mutex queuesLock;
 
     /** 
@@ -68,14 +70,21 @@ public class Manager
         this.watcher = new Watcher(this, socket);
     }
 
-    // TODO: comment
-    // Starts the watcher
+    /** 
+     * Starts the management of the socket,
+     * resulting in queues being updated upon
+     * reciving messages tagged for them
+     */
     public void start()
     {
         watcher.startWatcher();
     }
 
-    // Stops the watcher
+    /** 
+     * Stops the management of the socket, resulting
+     * in ending the updating of queues and closing
+     * the underlying connection
+     */
     public void stop()
     {
         watcher.shutdown();
@@ -285,7 +294,6 @@ public class Manager
 
         return potentialDefaultQueue;
     }
-
 
     /** 
      * Returns the default queue

@@ -1,3 +1,8 @@
+/**
+ * Facilitates the reading of messages from the socket,
+ * decoding thereof and final enqueuing thereof into their
+ * respective queus
+ */
 module tristanable.manager.watcher;
 
 import core.thread : Thread;
@@ -28,9 +33,16 @@ public class Watcher : Thread
      */
     private Socket socket;
 
-    // TODO: make package-level in a way such
-    // ... that only Manager can access this constructor
-    // TODO: Add constructor doc
+    /** 
+     * Creates a new `Watcher` that is associated
+     * with the provided `Manager` such that it can
+     * add to its registered queues. The provided `Socket`
+     * is such that it can be read from and managed.
+     *
+     * Params:
+     *   manager = the `Manager` to associate with
+     *   socket = the underlying `Socket` to read data from
+     */
     package this(Manager manager, Socket socket)
     {
         this.manager = manager;
@@ -39,6 +51,9 @@ public class Watcher : Thread
         super(&watch);
     }
 
+    /** 
+     * Starts the underlying thread
+     */
     package void startWatcher()
     {
         /* Start the watch method on a new thread */
@@ -114,6 +129,10 @@ public class Watcher : Thread
         }
     }
 
+    /** 
+     * Shuts down the watcher, unblocks the blocking read in the loop
+     * resulting in the watcher thread ending
+     */
     package void shutdown()
     {
         /* Unblock all calls to `recv()` and disallow future ones */

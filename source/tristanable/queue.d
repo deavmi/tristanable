@@ -18,15 +18,27 @@ version(unittest)
    import std.conv : to;
 }
 
+/** 
+ * Represents a queue whereby messages of a certain tag/id
+ * can be enqueued to (by the `Watcher`) and dequeued from
+ * (by the user application)
+ */
 public class Queue
 {
     /** 
-     * Everytime a thread calls `.dequeue()` on this queue
-     * 
+     * The libsnooze event used to sleep/wake
+     * on queue events
      */
     private Event event;
 
+    /** 
+     * The queue of messages
+     */
     private SList!(TaggedMessage) queue;
+
+    /** 
+     * The lock for the message queue
+     */
     private Mutex queueLock;
     
     /** 
@@ -161,6 +173,11 @@ public class Queue
         return dequeuedMessage;
     }
 
+    /** 
+     * Get the id/tag of this queue
+     *
+     * Returns: the queue's id
+     */
     public ulong getID()
     {
         return queueID;
