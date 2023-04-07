@@ -35,10 +35,12 @@ public class Manager
 
     /** 
      * Currently registered queues
-     *
-     * NOTE: Make a ulong map to this later
      */
     private SList!(Queue) queues;
+
+    /** 
+     * Lock for currently registered queues
+     */
     private Mutex queuesLock;
 
     /** 
