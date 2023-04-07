@@ -1,3 +1,8 @@
+/**
+ * Facilitates the reading of messages from the socket,
+ * decoding thereof and final enqueuing thereof into their
+ * respective queus
+ */
 module tristanable.manager.watcher;
 
 import core.thread : Thread;
