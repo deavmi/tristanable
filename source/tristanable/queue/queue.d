@@ -1,7 +1,9 @@
 /**
  * A queue of queue items all of the same tag
  */
-module tristanable.queue;
+module tristanable.queue.queue;
+
+import tristanable.queue.listener : TListener;
 
 // TODO: Examine the below import which seemingly fixes stuff for libsnooze
 import libsnooze.clib;
@@ -26,6 +28,11 @@ version(unittest)
 public class Queue
 {
     /** 
+     * This queue's unique ID
+     */
+    private ulong queueID;
+
+    /** 
      * The libsnooze event used to sleep/wake
      * on queue events
      */
@@ -40,12 +47,19 @@ public class Queue
      * The lock for the message queue
      */
     private Mutex queueLock;
-    
-    /** 
-     * This queue's unique ID
-     */
-    private ulong queueID;
 
+    /** 
+     * Attached queue listeners
+     */
+    private SList!(TListener) listeners;
+
+    /** 
+     * Lock for the listeners queue
+     */
+    private Mutex listenersLock;
+
+    // TODO: Add listener add/remove methods
+    // TODO: On queue actions add a notificaiton call to the listeners
 
     /** 
      * Constructs a new Queue and immediately sets up the notification

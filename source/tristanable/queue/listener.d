@@ -1,4 +1,4 @@
-module tristanable.listener;
+module tristanable.queue.listener;
 
 // TODO: Implement me
 

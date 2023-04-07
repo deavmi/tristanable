@@ -11,8 +11,9 @@ public import tristanable.manager;
 
 /**
  * A queue of queue items all of the same tag
+ * and queue-related facilities
  */
-public import tristanable.queue : Queue;
+public import tristanable.queue;
 
 /**
  * Error handling type definitions
