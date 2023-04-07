@@ -28,9 +28,16 @@ public class Watcher : Thread
      */
     private Socket socket;
 
-    // TODO: make package-level in a way such
-    // ... that only Manager can access this constructor
-    // TODO: Add constructor doc
+    /** 
+     * Creates a new `Watcher` that is associated
+     * with the provided `Manager` such that it can
+     * add to its registered queues. The provided `Socket`
+     * is such that it can be read from and managed.
+     *
+     * Params:
+     *   manager = the `Manager` to associate with
+     *   socket = the underlying `Socket` to read data from
+     */
     package this(Manager manager, Socket socket)
     {
         this.manager = manager;
@@ -39,6 +46,9 @@ public class Watcher : Thread
         super(&watch);
     }
 
+    /** 
+     * Starts the underlying thread
+     */
     package void startWatcher()
     {
         /* Start the watch method on a new thread */
