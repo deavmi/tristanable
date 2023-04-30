@@ -12,6 +12,7 @@ import bformat;
 import tristanable.encoding;
 import tristanable.exceptions;
 import tristanable.queue;
+import bformat.client;
 
 /** 
  * Watches the socket on a thread of its own,
@@ -29,9 +30,9 @@ public class Watcher : Thread
     private Manager manager;
 
     /** 
-     * The underlying socket to read from
+     * The BClient to read from
      */
-    private Socket socket;
+    private BClient bClient;
 
     /** 
      * Creates a new `Watcher` that is associated
@@ -41,12 +42,12 @@ public class Watcher : Thread
      *
      * Params:
      *   manager = the `Manager` to associate with
-     *   socket = the underlying `Socket` to read data from
+     *   bclient = the underlying `BClient` to read data from
      */
-    package this(Manager manager, Socket socket)
+    package this(Manager manager, BClient bClient)
     {
         this.manager = manager;
-        this.socket = socket;
+        this.bClient = bClient;
 
         super(&watch);
     }
@@ -74,7 +75,7 @@ public class Watcher : Thread
             /* Do a bformat read-and-decode */
             byte[] wireTristan;
             version(unittest) { writeln("Before bformat recv()"); }
-            bool recvStatus = receiveMessage(socket, wireTristan); // TODO: Add a check for the status of read
+            bool recvStatus = bClient.receiveMessage(wireTristan); // TODO: Add a check for the status of read
             version(unittest) { writeln("After bformat recv()"); }
             version(unittest) { writeln("bformat recv() status: ", recvStatus); }
 
@@ -135,12 +136,8 @@ public class Watcher : Thread
      */
     package void shutdown()
     {
-        /* Unblock all calls to `recv()` and disallow future ones */
-        // TODO: Would we want to do the same for sends? */
-        socket.shutdown(SocketShutdown.RECEIVE);
-       
-        /* Close the connection */
-        socket.close();
+        /* Closes the bformat reader */
+        bClient.close();
     }
 }
 
@@ -170,6 +167,7 @@ unittest
         private void worker()
         {
             Socket clientSocket = server.accept();
+            BClient bClient = new BClient(clientSocket);
 
             Thread.sleep(dur!("seconds")(7));
             writeln("Server start");
@@ -181,7 +179,7 @@ unittest
              */
             TaggedMessage message = new TaggedMessage(42, cast(byte[])"Cucumber 😳️");
             byte[] tEncoded = message.encode();
-            writeln("server send status: ", sendMessage(clientSocket, tEncoded));
+            writeln("server send status: ", bClient.sendMessage(tEncoded));
 
             writeln("server send [done]");
 
@@ -192,7 +190,7 @@ unittest
              */
             message = new TaggedMessage(69, cast(byte[])"Hello");
             tEncoded = message.encode();
-            writeln("server send status: ", sendMessage(clientSocket, tEncoded));
+            writeln("server send status: ", bClient.sendMessage(tEncoded));
 
             writeln("server send [done]");
 
@@ -203,7 +201,7 @@ unittest
              */
             message = new TaggedMessage(69, cast(byte[])"Bye");
             tEncoded = message.encode();
-            writeln("server send status: ", sendMessage(clientSocket, tEncoded));
+            writeln("server send status: ", bClient.sendMessage(tEncoded));
 
             writeln("server send [done]");
         }
