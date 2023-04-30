@@ -11,7 +11,9 @@ import tristanable.encoding : TaggedMessage;
 import tristanable.exceptions;
 import std.container.slist : SList;
 import tristanable.manager.config;
-import bformat.sockets : bformatSendMessage = sendMessage;
+import river.core;
+import river.impls.sock : SockStream;
+import bformat.client;
 
 /** 
  * Manages a provided socket by spawning
@@ -29,9 +31,9 @@ public class Manager
     private Config config;
 
     /** 
-     * The underlying socket to read from
+     * The bformat client to read and write from
      */
-    private Socket socket;
+    private BClient bClient;
 
     /** 
      * Currently registered queues
@@ -60,14 +62,21 @@ public class Manager
      * this socket and file mail for us
      *
      * Params:
-     *   socket = the underlying socket to use
+     *   stream = the underlying stream to use
      */
-    this(Socket socket, Config config = defaultConfig())
+    this(Stream stream, Config config = defaultConfig())
     {
-        this.socket = socket;
+        this.bClient = new BClient(stream);
         this.queuesLock = new Mutex();
         this.config = config;
-        this.watcher = new Watcher(this, socket);
+        this.watcher = new Watcher(this, bClient);
+    }
+
+    // TODO: Comment this
+    // This is for backwards compatibility (whereby a `Socket` was taken in)
+    this(Socket socket, Config config = defaultConfig())
+    {
+        this(new SockStream(socket), config);
     }
 
     /** 
@@ -333,8 +342,18 @@ public class Manager
         byte[] encodedMessage = message.encode();
 
         /* Send it using bformat (encode-and-send) */
-        bformatSendMessage(socket, encodedMessage);
+        bClient.sendMessage(encodedMessage);
     }
+}
+
+
+
+// TODO: Fix this, write it in a nicer way
+// ... or make a private constructor here that
+// ... does not take it in
+version(unittest)
+{
+    Socket nullSock = null;
 }
 
 /**
@@ -344,7 +363,7 @@ public class Manager
 unittest
 {
     /* Create a manager */
-    Manager manager = new Manager(null);
+    Manager manager = new Manager(nullSock);
 
     /* Shouldn't be found */
     try
@@ -367,7 +386,7 @@ unittest
 unittest
 {
     /* Create a manager */
-    Manager manager = new Manager(null);
+    Manager manager = new Manager(nullSock);
 
     /* Create a new queue with tag 69 */
     Queue queue = new Queue(69);
@@ -399,7 +418,7 @@ unittest
 unittest
 {
     /* Create a manager */
-    Manager manager = new Manager(null);
+    Manager manager = new Manager(nullSock);
 
     /* Create a new queue with tag 69 */
     Queue queue = new Queue(69);
@@ -427,7 +446,7 @@ unittest
 unittest
 {
     /* Create a manager */
-    Manager manager = new Manager(null);
+    Manager manager = new Manager(nullSock);
 
     /* Get the next 3 available queues */
     Queue queue1 = manager.getUniqueQueue();
