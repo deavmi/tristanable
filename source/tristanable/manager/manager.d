@@ -265,6 +265,8 @@ public class Manager
         return true;
     }
 
+    // TODO: Impkement releaseQueu_nothrow and releaseQueue
+
     /** 
      * Sets the default queue
      *
