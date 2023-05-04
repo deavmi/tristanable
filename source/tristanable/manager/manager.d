@@ -458,3 +458,5 @@ unittest
     assert(queue2.getID() == 1);
     assert(queue3.getID() == 2);
 }
+
+// TODO: Add testing for queue existence (internal method)
