@@ -265,7 +265,61 @@ public class Manager
         return true;
     }
 
-    // TODO: Impkement releaseQueu_nothrow and releaseQueue
+    /** 
+     * De-registers the given queue from the manager
+     *
+     * Params:
+     *   queue = the queue to de-register
+     * Throws:
+     *   TristanableException if a queue with the provided id cannot be found
+     */
+    public void releaseQueue(Queue queue)
+    {
+        /* Try to de-register the queue */
+        bool status = releaseQueue_nothrow(queue);
+
+        /* If de-registration was not successful */
+        if(!status)
+        {
+            throw new TristanableException(ErrorType.QUEUE_NOT_FOUND);
+        }
+    }
+
+    /** 
+     * De-registers the given queue from the manager
+     *
+     * Params:
+     *   queue = the queue to de-register
+     * Returns: true if de-registration was successful, false otherwise
+     */
+    public bool releaseQueue_nothrow(Queue queue)
+    {
+        /* Lock the queue of queues */
+        queuesLock.lock();
+
+        /* On return or error */
+        scope(exit)
+        {
+            /* Unlock the queue of queues */
+            queuesLock.unlock();
+        }
+
+        /* Search for the queue, return false if it does NOT exist */
+        foreach(Queue curQueue; queues)
+        {
+            if(curQueue.getID() == queue.getID())
+            {
+                /* Remove the queue */
+                queues.linearRemoveElement(queue);
+
+                /* De-registration succeeded */
+                return true;
+            }
+        }
+
+        /* De-registration failed */
+        return false;
+    }
 
     /** 
      * Sets the default queue
@@ -439,6 +493,37 @@ unittest
     {
         assert(e.getError() == ErrorType.QUEUE_ALREADY_EXISTS);
     }
+}
+
+/**
+ * Tests registering a queue, de-registering it and
+ * then registering it again
+ */
+unittest
+{
+    /* Create a manager */
+    Manager manager = new Manager(nullSock);
+
+    /* Create a new queue with tag 69 */
+    Queue queue = new Queue(69);
+
+    /* Register the queue */
+    manager.registerQueue(queue);
+
+    /* Ensure it is registered */
+    assert(queue == manager.getQueue(69));
+
+    /* De-register the queue */
+    manager.releaseQueue(queue);
+
+    /* Ensure it is de-registered */
+    assert(manager.getQueue_nothrow(69) is null);
+
+    /* Register the queue (again) */
+    manager.registerQueue(queue);
+
+    /* Ensure it is registered (again) */
+    assert(queue == manager.getQueue(69));
 }
 
 /**
