@@ -24,7 +24,17 @@ public enum ErrorType
     /** 
      * If no default queue is configured
      */
-    NO_DEFAULT_QUEUE
+    NO_DEFAULT_QUEUE,
+
+    /** 
+     * The blocking call to `dequeue()`, somehow, failed
+     */
+    DEQUEUE_FAILED,
+
+    /** 
+     * The call to `enqueue()`, somehow, failed
+     */
+    ENQUEUE_FAILED
 }
 
 /** 
