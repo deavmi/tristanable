@@ -109,7 +109,7 @@ public class Queue
             // TODO: Make us wait on the event (optional with a time-out)
             event.notifyAll();
         }
-        catch(SnoozeError snozErr)
+        catch(FatalException snozErr)
         {
             // TODO: Add error handling for libsnooze exceptions here
         }
@@ -148,7 +148,11 @@ public class Queue
                 // TODO: Make us wait on the event (optional with a time-out)
                 event.wait();
             }
-            catch(SnoozeError snozErr)
+            catch(InterruptedException e)
+            {
+                // TODO: Add code here which would retry the wait
+            }
+            catch(FatalException fatalErr)
             {
                 // TODO: Add error handling for libsnooze exceptions here
             }
