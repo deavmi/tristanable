@@ -11,6 +11,7 @@ import core.sync.mutex : Mutex;
 import std.container.slist : SList;
 import tristanable.encoding;
 import core.thread : dur;
+import tristanable.exceptions;
 
 version(unittest)
 {
@@ -76,6 +77,9 @@ public class Queue
      * and then wakes up any thread that has called dequeue
      * on this queue as well
      *
+     * On error enqueueing a `TristanableException` will be
+     * thrown.
+     *
      * Params:
      *   message = the TaggedMessage to enqueue
      */
@@ -111,7 +115,8 @@ public class Queue
         }
         catch(FatalException snozErr)
         {
-            // TODO: Add error handling for libsnooze exceptions here
+            // Throw an exception on a fatal exception
+            throw new TristanableException(ErrorType.ENQUEUE_FAILED);
         }
     }
 
@@ -119,6 +124,9 @@ public class Queue
 
     /** 
      * Blocks till a message can be dequeued from this queue
+     *
+     * On error dequeueing a `TristanableException` will be
+     * thrown.
      *
      * Returns: the dequeued TaggedMessage
      */
@@ -143,19 +151,45 @@ public class Queue
         /* Block till we dequeue a message successfully */
         while(dequeuedMessage is null)
         {
-            try
+            /**
+             * Call `wait()` and catch any interrupts
+             * in which case loop back and call `wait()`
+             * again
+             */
+            while(true)
             {
-                // TODO: Make us wait on the event (optional with a time-out)
-                event.wait();
+                try
+                {
+                    // TODO: Make us wait on the event (optional with a time-out)
+                    event.wait();
+                }
+                catch(InterruptedException e)
+                {
+                    version(unittest)
+                    {
+                        import std.stdio;
+                        writeln("dequeue() had libsnooze wait() get interrupted!");
+                    }
+
+                    // Retry the wait()
+                    continue;
+                }
+                catch(FatalException fatalErr)
+                {
+                    version(unittest)
+                    {
+                        import std.stdio;
+                        writeln("dequeue() had libsnooze wait() get FATALLY fail! Exception will now throw...");
+                    }
+
+                    // Throw an exception on a fatal exception
+                    throw new TristanableException(ErrorType.DEQUEUE_FAILED);
+                }
+
+                // On successful wait() wake-up exit this wait()-retry loop
+                break;
             }
-            catch(InterruptedException e)
-            {
-                // TODO: Add code here which would retry the wait
-            }
-            catch(FatalException fatalErr)
-            {
-                // TODO: Add error handling for libsnooze exceptions here
-            }
+            
 
             /* Lock the item queue */
             queueLock.lock();
