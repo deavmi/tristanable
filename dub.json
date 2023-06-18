@@ -4,7 +4,7 @@
 	],
 	"copyright": "Copyright © 2023, Tristan B. Kildaire",
 	"dependencies": {
-		"bformat": "4.1.0",
+		"bformat": ">=4.1.1",
 		"libsnooze": ">=1.0.0-beta"
 	},
 	"description": "Tristanable network message queuing framework",
