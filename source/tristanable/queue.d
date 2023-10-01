@@ -112,9 +112,9 @@ public class Queue
         try
         {
             // TODO: Make us wait on the event (optional with a time-out)
-            event.notifyAll();
+            signal.notifyAll();
         }
-        catch(FatalException snozErr)
+        catch(SyncError snozErr)
         {
             // Throw an exception on a fatal exception
             throw new TristanableException(ErrorType.ENQUEUE_FAILED);
