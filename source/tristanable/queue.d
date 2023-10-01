@@ -71,9 +71,6 @@ public class Queue
 
         /* Set the queue id */
         this.queueID = queueID;
-
-        /* Ensure pipe existence (see https://deavmi.assigned.network/git/deavmi/tristanable/issues/5) */
-        event.wait(dur!("seconds")(0));
     }
 
     /** 
