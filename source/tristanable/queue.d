@@ -3,10 +3,6 @@
  */
 module tristanable.queue;
 
-// TODO: Examine the below import which seemingly fixes stuff for libsnooze
-import libsnooze.clib;
-import libsnooze;
-
 import core.sync.mutex : Mutex;
 import std.container.slist : SList;
 import tristanable.encoding;
