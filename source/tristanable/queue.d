@@ -4,6 +4,8 @@
 module tristanable.queue;
 
 import core.sync.mutex : Mutex;
+import core.sync.condition : Condition;
+import core.sync.exception : SyncError;
 import std.container.slist : SList;
 import tristanable.encoding;
 import core.thread : dur;
@@ -23,10 +25,15 @@ version(unittest)
 public class Queue
 {
     /** 
-     * The libsnooze event used to sleep/wake
-     * on queue events
+     * Mutex for the condition variable
      */
-    private Event event;
+    private Mutex mutex;
+
+    /** 
+     * The condition variable used to sleep/wake
+     * on queue of events
+     */
+    private Condition signal;
 
     /** 
      * The queue of messages
@@ -58,8 +65,9 @@ public class Queue
         /* Initialize the queue lock */
         this.queueLock = new Mutex();
 
-        /* Initialize the event */
-        this.event = new Event();
+        /* Initialize the condition variable */
+        this.mutex = new Mutex();
+        this.signal = new Condition(this.mutex);
 
         /* Set the queue id */
         this.queueID = queueID;
