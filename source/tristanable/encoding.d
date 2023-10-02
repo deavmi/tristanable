@@ -4,7 +4,7 @@
 module tristanable.encoding;
 
 import std.conv : to;
-import niknaks.bits : bytesToIntegral, Order, order;
+import niknaks.bits : bytesToIntegral, Order, order, toBytes;
 
 /** 
  * Represents a tagged message that has been decoded
@@ -85,41 +85,9 @@ public final class TaggedMessage
         /* The encoded bytes */
         byte[] encodedMessage;
 
-        /* If on little endian, then dump 64 bit as is - little endian */
-        version(LittleEndian)
-        {
-            /* Base (little first) of tag */
-            byte* basePtr = cast(byte*)&tag;
+        /* If on little endian then no re-order, if host is BE flip (the tag) */
+        encodedMessage ~= toBytes(order(tag, Order.LE));
 
-            encodedMessage ~= *(basePtr+0);
-            encodedMessage ~= *(basePtr+1);
-            encodedMessage ~= *(basePtr+2);
-            encodedMessage ~= *(basePtr+3);
-            encodedMessage ~= *(basePtr+4);
-            encodedMessage ~= *(basePtr+5);
-            encodedMessage ~= *(basePtr+6);
-            encodedMessage ~= *(basePtr+7);
-        }
-        /* If on big endian, then traverse 64-bit number in reverse - and tack on */
-        else version(BigEndian)
-        {
-            /* Base (biggest first) of tag */
-            byte* highPtr = cast(byte*)&tag;
-
-            encodedMessage ~= *(highPtr+7);
-            encodedMessage ~= *(highPtr+6);
-            encodedMessage ~= *(highPtr+5);
-            encodedMessage ~= *(highPtr+4);
-            encodedMessage ~= *(highPtr+3);
-            encodedMessage ~= *(highPtr+2);
-            encodedMessage ~= *(highPtr+1);
-            encodedMessage ~= *(highPtr+0);
-        }
-        /* Hail marry, mother of God, pray for our sinners, now and at the our of our death Amen */
-        else
-        {
-            pragma(msg, "Not feeling scrumptious homeslice 😎️");
-        }
 
         /* Tack on the data */
         encodedMessage ~= data;
