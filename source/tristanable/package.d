@@ -12,7 +12,7 @@ public import tristanable.manager;
 /**
  * A queue of queue items all of the same tag
  */
-public import tristanable.queue : Queue;
+public import tristanable.queue.queue : Queue;
 
 /**
  * Error handling type definitions

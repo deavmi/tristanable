@@ -3,8 +3,6 @@
  */
 module tristanable.queue.queue;
 
-import tristanable.queue.listener : TListener;
-
 import core.sync.mutex : Mutex;
 import core.sync.condition : Condition;
 import core.sync.exception : SyncError;
@@ -53,16 +51,6 @@ public class Queue
      * The lock for the message queue
      */
     private Mutex queueLock;
-
-    /** 
-     * Attached queue listeners
-     */
-    private SList!(TListener) listeners;
-
-    /** 
-     * Lock for the listeners queue
-     */
-    private Mutex listenersLock;
 
     /**
      * If a message is enqueued prior

@@ -11,7 +11,7 @@ import std.socket;
 import bformat;
 import tristanable.encoding;
 import tristanable.exceptions;
-import tristanable.queue;
+import tristanable.queue.queue;
 import bformat.client;
 
 /** 

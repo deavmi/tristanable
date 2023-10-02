@@ -4,7 +4,7 @@
 module tristanable.manager.manager;
 
 import std.socket;
-import tristanable.queue : Queue;
+import tristanable.queue.queue : Queue;
 import core.sync.mutex : Mutex;
 import tristanable.manager.watcher : Watcher;
 import tristanable.encoding : TaggedMessage;
