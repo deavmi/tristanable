@@ -11,7 +11,6 @@ public import tristanable.manager;
 
 /**
  * A queue of queue items all of the same tag
- * and queue-related facilities
  */
 public import tristanable.queue.queue : Queue;
 

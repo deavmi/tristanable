@@ -4,7 +4,8 @@
 	],
 	"copyright": "Copyright © 2023, Tristan B. Kildaire",
 	"dependencies": {
-		"bformat": ">=4.1.1"
+		"bformat": ">=4.1.1",
+		"niknaks": ">=0.3.0"
 	},
 	"description": "Tristanable network message queuing framework",
 	"homepage": "https://deavmi.assigned.network/projects/tristanable",

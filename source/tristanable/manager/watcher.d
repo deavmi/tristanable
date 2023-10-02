@@ -204,6 +204,28 @@ unittest
             writeln("server send status: ", bClient.sendMessage(tEncoded));
 
             writeln("server send [done]");
+
+            /** 
+             * Create a tagged message to send
+             *
+             * tag 100 payload Bye
+             */
+            message = new TaggedMessage(100, cast(byte[])"DEFQUEUE_1");
+            tEncoded = message.encode();
+            writeln("server send status: ", bClient.sendMessage(tEncoded));
+
+            writeln("server send [done]");
+
+            /** 
+             * Create a tagged message to send
+             *
+             * tag 200 payload Bye
+             */
+            message = new TaggedMessage(200, cast(byte[])"DEFQUEUE_2");
+            tEncoded = message.encode();
+            writeln("server send status: ", bClient.sendMessage(tEncoded));
+
+            writeln("server send [done]");
         }
     }
 
@@ -222,6 +244,10 @@ unittest
 
     manager.registerQueue(sixtyNine);
     manager.registerQueue(fortyTwo);
+
+    // Register a default queue (tag ignored)
+    Queue defaultQueue = new Queue(2332);
+    manager.setDefaultQueue(defaultQueue);
 
 
     /* Connect our socket to the server */
@@ -252,6 +278,19 @@ unittest
     assert(dequeuedMessage.getPayload() == cast(byte[])"Cucumber 😳️");
     
     
+    /* Dequeue two messages from the default queue */
+    writeln("unittest thread: Dequeue() blocking...");
+    dequeuedMessage = defaultQueue.dequeue();
+    writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+    assert(dequeuedMessage.getTag() == 100);
+    assert(dequeuedMessage.getPayload() == cast(byte[])"DEFQUEUE_1");
+
+    writeln("unittest thread: Dequeue() blocking...");
+    dequeuedMessage = defaultQueue.dequeue();
+    writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+    assert(dequeuedMessage.getTag() == 200);
+    assert(dequeuedMessage.getPayload() == cast(byte[])"DEFQUEUE_2");
+
 
     /* Stop the manager */
     manager.stop();

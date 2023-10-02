@@ -4,6 +4,7 @@
 module tristanable.encoding;
 
 import std.conv : to;
+import niknaks.bits : bytesToIntegral, Order, order, toBytes;
 
 /** 
  * Represents a tagged message that has been decoded
@@ -60,31 +61,9 @@ public final class TaggedMessage
         /* The decoded tag */
         ulong decodedTag;
         
-        /* If on little endian then dump direct */
-        version(LittleEndian)
-        {
-            decodedTag = *cast(ulong*)encodedMessage.ptr;
-        }
-        /* If on big endian then reverse received 8 bytes */
-        else version(BigEndian)
-        {
-            /* Base of our tag */
-            byte* tagHighPtr = cast(byte*)decodedTag.ptr;
-
-            *(tagHighPtr+0) = encodedMessage[7];
-            *(tagHighPtr+1) = encodedMessage[6];
-            *(tagHighPtr+2) = encodedMessage[5];
-            *(tagHighPtr+3) = encodedMessage[4];
-            *(tagHighPtr+4) = encodedMessage[3];
-            *(tagHighPtr+5) = encodedMessage[2];
-            *(tagHighPtr+6) = encodedMessage[1];
-            *(tagHighPtr+7) = encodedMessage[0];
-        }
-        /* Blessed is the fruit of thy womb Jesus, hail Mary, mother of God, pray for our sinners - now and at the hour of our death - Amen */
-        else
-        {
-            pragma(msg, "Not too sure about tha 'ey 😳️");
-        }
+        /* Take ulong-many bytes and only flip them to LE if not on LE host */
+        decodedTag = order(bytesToIntegral!(ushort)(cast(ubyte[])encodedMessage), Order.LE);
+        
 
         /* Set the tag */
         decodedMessage.setTag(decodedTag);
@@ -106,41 +85,9 @@ public final class TaggedMessage
         /* The encoded bytes */
         byte[] encodedMessage;
 
-        /* If on little endian, then dump 64 bit as is - little endian */
-        version(LittleEndian)
-        {
-            /* Base (little first) of tag */
-            byte* basePtr = cast(byte*)&tag;
+        /* If on little endian then no re-order, if host is BE flip (the tag) */
+        encodedMessage ~= toBytes(order(tag, Order.LE));
 
-            encodedMessage ~= *(basePtr+0);
-            encodedMessage ~= *(basePtr+1);
-            encodedMessage ~= *(basePtr+2);
-            encodedMessage ~= *(basePtr+3);
-            encodedMessage ~= *(basePtr+4);
-            encodedMessage ~= *(basePtr+5);
-            encodedMessage ~= *(basePtr+6);
-            encodedMessage ~= *(basePtr+7);
-        }
-        /* If on big endian, then traverse 64-bit number in reverse - and tack on */
-        else version(BigEndian)
-        {
-            /* Base (biggest first) of tag */
-            byte* highPtr = cast(byte*)&tag;
-
-            encodedMessage ~= *(highPtr+7);
-            encodedMessage ~= *(highPtr+6);
-            encodedMessage ~= *(highPtr+5);
-            encodedMessage ~= *(highPtr+4);
-            encodedMessage ~= *(highPtr+3);
-            encodedMessage ~= *(highPtr+2);
-            encodedMessage ~= *(highPtr+1);
-            encodedMessage ~= *(highPtr+0);
-        }
-        /* Hail marry, mother of God, pray for our sinners, now and at the our of our death Amen */
-        else
-        {
-            pragma(msg, "Not feeling scrumptious homeslice 😎️");
-        }
 
         /* Tack on the data */
         encodedMessage ~= data;
