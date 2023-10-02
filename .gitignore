@@ -24,3 +24,4 @@ docs/
 *.lst
 source/tristanable/queue.d
 dub.selections.json
+tristanable-test-library
