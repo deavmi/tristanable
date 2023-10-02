@@ -5,14 +5,13 @@ module tristanable.queue.queue;
 
 import tristanable.queue.listener : TListener;
 
-// TODO: Examine the below import which seemingly fixes stuff for libsnooze
-import libsnooze.clib;
-import libsnooze;
-
 import core.sync.mutex : Mutex;
+import core.sync.condition : Condition;
+import core.sync.exception : SyncError;
 import std.container.slist : SList;
 import tristanable.encoding;
-import core.thread : dur;
+import core.time : Duration, dur;
+import tristanable.exceptions;
 
 version(unittest)
 {
@@ -35,8 +34,15 @@ public class Queue
     /** 
      * The libsnooze event used to sleep/wake
      * on queue events
+     * Mutex for the condition variable
      */
-    private Event event;
+    private Mutex mutex;
+
+    /** 
+     * The condition variable used to sleep/wake
+     * on queue of events
+     */
+    private Condition signal;
 
     /** 
      * The queue of messages
@@ -60,6 +66,15 @@ public class Queue
 
     // TODO: Add listener add/remove methods
     // TODO: On queue actions add a notificaiton call to the listeners
+    /**
+     * If a message is enqueued prior
+     * to us sleeping then we won't
+     * wake up and return for it.
+     *
+     * Therefore a periodic wakeup
+     * is required.
+     */
+    private Duration wakeInterval;
 
     /** 
      * Constructs a new Queue and immediately sets up the notification
@@ -75,20 +90,46 @@ public class Queue
         /* Initialize the queue lock */
         this.queueLock = new Mutex();
 
-        /* Initialize the event */
-        this.event = new Event();
+        /* Initialize the condition variable */
+        this.mutex = new Mutex();
+        this.signal = new Condition(this.mutex);
 
         /* Set the queue id */
         this.queueID = queueID;
 
-        /* Ensure pipe existence (see https://deavmi.assigned.network/git/deavmi/tristanable/issues/5) */
-        event.wait(dur!("seconds")(0));
+        /* Set the slumber interval */
+        this.wakeInterval = dur!("msecs")(50); // TODO: Decide on value
+    }
+
+    /** 
+     * Returns the current wake interval
+     * for the queue checker
+     *
+     * Returns: the `Duration`
+     */
+    public Duration getWakeInterval()
+    {
+        return this.wakeInterval;
+    }
+
+    /** 
+     * Sets the wake up interval
+     *
+     * Params:
+     *   interval = the new interval
+     */
+    public void setWakeInterval(Duration interval)
+    {
+        this.wakeInterval = interval;
     }
 
     /** 
      * Enqueues the provided tagged message onto this queue
      * and then wakes up any thread that has called dequeue
      * on this queue as well
+     *
+     * On error enqueueing a `TristanableException` will be
+     * thrown.
      *
      * Params:
      *   message = the TaggedMessage to enqueue
@@ -121,11 +162,12 @@ public class Queue
         try
         {
             // TODO: Make us wait on the event (optional with a time-out)
-            event.notifyAll();
+            signal.notifyAll();
         }
-        catch(SnoozeError snozErr)
+        catch(SyncError snozErr)
         {
-            // TODO: Add error handling for libsnooze exceptions here
+            // Throw an exception on a fatal exception
+            throw new TristanableException(ErrorType.ENQUEUE_FAILED);
         }
     }
 
@@ -133,6 +175,9 @@ public class Queue
 
     /** 
      * Blocks till a message can be dequeued from this queue
+     *
+     * On error dequeueing a `TristanableException` will be
+     * thrown.
      *
      * Returns: the dequeued TaggedMessage
      */
@@ -157,15 +202,25 @@ public class Queue
         /* Block till we dequeue a message successfully */
         while(dequeuedMessage is null)
         {
+            scope(exit)
+            {
+                // Unlock the mutex
+                this.mutex.unlock();
+            }
+
+            // Lock the mutex
+            this.mutex.lock();
+
             try
             {
-                // TODO: Make us wait on the event (optional with a time-out)
-                event.wait();
+                this.signal.wait(this.wakeInterval);
             }
-            catch(SnoozeError snozErr)
+            catch(SyncError e)
             {
-                // TODO: Add error handling for libsnooze exceptions here
+                // Throw an exception on a fatal exception
+                throw new TristanableException(ErrorType.DEQUEUE_FAILED);
             }
+
 
             /* Lock the item queue */
             queueLock.lock();
