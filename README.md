@@ -18,44 +18,155 @@ Tristanable provides a way for you to receive the "IM notification first" but bl
 
 ### Code example
 
-If we wanted to implement the following we would do the following. One note is that instead of waiting on messages of a specific _"type"_ (or rather **tag**), tristanable provides not just a one-message length buffer per tag but in fact a full queue per tag, meaning any received message with tag `1` will be enqueued and not dropped after the first message of type `1` is buffered.
+Below is a fully-fledged example of the types of places (networking) where tristanable can be of help. The code is all explained in the comments:
 
 ```d
-import tristanable.manager;
-import tristanable.queue;
-import tristanable.queueitem;
+import std.socket;
+import std.stdio;
+import core.thread;
 
-/* Create a manager to manage the socket for us */
-Manager manager = new Manager(socket);
+Address serverAddress = parseAddress("::1", 0);
+Socket server = new Socket(AddressFamily.INET6, SocketType.STREAM, ProtocolType.TCP);
+server.bind(serverAddress);
+server.listen(0);
 
-/* Create a Queue for all "weather messages" */
-Queue weatherQueue = new Queue(1);
+class ServerThread : Thread
+{
+    this()
+    {
+        super(&worker);
+    }
 
-/* Create a Queue for all "IM notifications" */
-Queue instantNotification = new Queue(2);
+    private void worker()
+    {
+        Socket clientSocket = server.accept();
+        BClient bClient = new BClient(clientSocket);
 
-/* Tell the manager to look out for tagged messages `1` and `2` */
-manager.addQueue(weatherQueue);
-manager.addQueue(instantNotification);
+        Thread.sleep(dur!("seconds")(7));
+        writeln("Server start");
 
-/* Now we can block on this queue and return with its head */
-QueueItem message = weatherQueue.dequeue();
-```
+        /** 
+            * Create a tagged message to send
+            *
+            * tag 42 payload Cucumber 😳️
+            */
+        TaggedMessage message = new TaggedMessage(42, cast(byte[])"Cucumber 😳️");
+        byte[] tEncoded = message.encode();
+        writeln("server send status: ", bClient.sendMessage(tEncoded));
 
-Surely, there must be some sort of encoding mechanism too? The messages after all need to be encoded. **No problem!**, we have that sorted:
+        writeln("server send [done]");
 
-```d
-import tristanable.encoding;
+        /** 
+            * Create a tagged message to send
+            *
+            * tag 69 payload Hello
+            */
+        message = new TaggedMessage(69, cast(byte[])"Hello");
+        tEncoded = message.encode();
+        writeln("server send status: ", bClient.sendMessage(tEncoded));
 
-/* Let's send it with tag 1 and data "Hello" */
-ulong tag = 1;
-byte[] data = cast(byte[])"Hello";
+        writeln("server send [done]");
 
-/* When sending a message */
-DataMessage tristanEncoded = new DataMessage(tag, data);
+        /** 
+            * Create a tagged message to send
+            *
+            * tag 69 payload Bye
+            */
+        message = new TaggedMessage(69, cast(byte[])"Bye");
+        tEncoded = message.encode();
+        writeln("server send status: ", bClient.sendMessage(tEncoded));
 
-/* Then send it */
-socket.send(encodeForSend(tristanEncoded));
+        writeln("server send [done]");
+
+        /** 
+            * Create a tagged message to send
+            *
+            * tag 100 payload Bye
+            */
+        message = new TaggedMessage(100, cast(byte[])"DEFQUEUE_1");
+        tEncoded = message.encode();
+        writeln("server send status: ", bClient.sendMessage(tEncoded));
+
+        writeln("server send [done]");
+
+        /** 
+            * Create a tagged message to send
+            *
+            * tag 200 payload Bye
+            */
+        message = new TaggedMessage(200, cast(byte[])"DEFQUEUE_2");
+        tEncoded = message.encode();
+        writeln("server send status: ", bClient.sendMessage(tEncoded));
+
+        writeln("server send [done]");
+    }
+}
+
+ServerThread serverThread = new ServerThread();
+serverThread.start();
+
+Socket client = new Socket(AddressFamily.INET6, SocketType.STREAM, ProtocolType.TCP);
+
+writeln(server.localAddress);
+
+
+Manager manager = new Manager(client);
+
+Queue sixtyNine = new Queue(69);
+Queue fortyTwo = new Queue(42);
+
+manager.registerQueue(sixtyNine);
+manager.registerQueue(fortyTwo);
+
+// Register a default queue (tag ignored)
+Queue defaultQueue = new Queue(2332);
+manager.setDefaultQueue(defaultQueue);
+
+
+/* Connect our socket to the server */
+client.connect(server.localAddress);
+
+/* Start the manager and let it manage the socket */
+manager.start();
+
+/* Block on the unittest thread for a received message */
+writeln("unittest thread: Dequeue() blocking...");
+TaggedMessage dequeuedMessage = sixtyNine.dequeue();
+writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+assert(dequeuedMessage.getTag() == 69);
+assert(dequeuedMessage.getPayload() == cast(byte[])"Hello");
+
+/* Block on the unittest thread for a received message */
+writeln("unittest thread: Dequeue() blocking...");
+dequeuedMessage = sixtyNine.dequeue();
+writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+assert(dequeuedMessage.getTag() == 69);
+assert(dequeuedMessage.getPayload() == cast(byte[])"Bye");
+
+/* Block on the unittest thread for a received message */
+writeln("unittest thread: Dequeue() blocking...");
+dequeuedMessage = fortyTwo.dequeue();
+writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+assert(dequeuedMessage.getTag() == 42);
+assert(dequeuedMessage.getPayload() == cast(byte[])"Cucumber 😳️");
+
+
+/* Dequeue two messages from the default queue */
+writeln("unittest thread: Dequeue() blocking...");
+dequeuedMessage = defaultQueue.dequeue();
+writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+assert(dequeuedMessage.getTag() == 100);
+assert(dequeuedMessage.getPayload() == cast(byte[])"DEFQUEUE_1");
+
+writeln("unittest thread: Dequeue() blocking...");
+dequeuedMessage = defaultQueue.dequeue();
+writeln("unittest thread: Got '"~dequeuedMessage.toString()~"' decode payload to string '"~cast(string)dequeuedMessage.getPayload()~"'");
+assert(dequeuedMessage.getTag() == 200);
+assert(dequeuedMessage.getPayload() == cast(byte[])"DEFQUEUE_2");
+
+
+/* Stop the manager */
+manager.stop();
 ```
 
 And let tristanable handle it! We even handle the message lengths and everything using another great project [bformat](https://deavmi.assigned.network/projects/bformat).
