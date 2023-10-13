@@ -3,6 +3,8 @@
  */
 module tristanable.queue.queue;
 
+import tristanable.queue.listener : TListener;
+
 import core.sync.mutex : Mutex;
 import core.sync.condition : Condition;
 import core.sync.exception : SyncError;
@@ -52,6 +54,18 @@ public class Queue
      */
     private Mutex queueLock;
 
+    /** 
+     * Attached queue listeners
+     */
+    private SList!(TListener) listeners;
+
+    /** 
+     * Lock for the listeners queue
+     */
+    private Mutex listenersLock;
+
+    // TODO: Add listener add/remove methods
+    // TODO: On queue actions add a notificaiton call to the listeners
     /**
      * If a message is enqueued prior
      * to us sleeping then we won't
