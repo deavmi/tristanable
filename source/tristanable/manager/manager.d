@@ -97,6 +97,8 @@ public class Manager
     public void stop()
     {
         watcher.shutdown();
+
+        // TODO: Unblock ALL queues here
     }
 
     /**
