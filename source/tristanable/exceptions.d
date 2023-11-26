@@ -16,6 +16,12 @@ public enum ErrorType
     UNSET,
 
     /**
+     * If the manager has already
+     * been shutdown
+     */
+    MANAGER_SHUTDOWN,
+
+    /**
      * If the requested queue could not be found
      */
     QUEUE_NOT_FOUND,
