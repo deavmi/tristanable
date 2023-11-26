@@ -128,6 +128,8 @@ public class Watcher : Thread
                 break;
             }
         }
+
+        // TODO: Unblock all `dequeue()`'s here
     }
 
     /** 
