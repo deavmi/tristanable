@@ -11,6 +11,11 @@ import std.conv : to;
 public enum ErrorType
 {
     /**
+     * Unset
+     */
+    UNSET,
+
+    /**
      * If the requested queue could not be found
      */
     QUEUE_NOT_FOUND,
