@@ -132,7 +132,7 @@ public class Watcher : Thread
         // TODO: Unblock all `dequeue()`'s here
         // TODO: Get a reason for exiting (either cause of error OR shutdoiwn (see below (which in turn is called by the Manager)))
         version(unittest) { writeln("Exited watcher loop"); }
-        this.manager.stop();
+        // this.manager.stop();
     }
 
     /** 
