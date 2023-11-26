@@ -96,9 +96,33 @@ public class Manager
      */
     public void stop()
     {
+        /* Stop the watcher */
         watcher.shutdown();
 
-        // TODO: Unblock ALL queues here
+        /* Unblock all `dequeue()` calls */
+        shutdownAllQueues();
+    }
+
+    /** 
+     * Shuts down all registered queues
+     */
+    protected void shutdownAllQueues()
+    {
+        /* Lock the queue of queues */
+        queuesLock.lock();
+
+        /* On return or error */
+        scope(exit)
+        {
+            /* Unlock the queue of queues */
+            queuesLock.unlock();
+        }
+
+        /* Shutdown each queue */
+        foreach(Queue queue; this.queues)
+        {
+            queue.shutdownQueue(ErrorType.MANAGER_SHUTDOWN);
+        }
     }
 
     /**
