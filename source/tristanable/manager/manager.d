@@ -149,6 +149,8 @@ public class Manager
             queuesLock.unlock();
         }
 
+        // TODO: Shutdown default queue - see mtsafety
+
         /* Shutdown each queue */
         foreach(Queue queue; this.queues)
         {
