@@ -22,6 +22,12 @@ public enum ErrorType
     MANAGER_SHUTDOWN,
 
     /**
+     * If the watcher has failed
+     * to stay alive
+     */
+    WATCHER_FAILED,
+
+    /**
      * If the requested queue could not be found
      */
     QUEUE_NOT_FOUND,
