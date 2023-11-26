@@ -11,6 +11,23 @@ import std.conv : to;
 public enum ErrorType
 {
     /**
+     * Unset
+     */
+    UNSET,
+
+    /**
+     * If the manager has already
+     * been shutdown
+     */
+    MANAGER_SHUTDOWN,
+
+    /**
+     * If the watcher has failed
+     * to stay alive
+     */
+    WATCHER_FAILED,
+
+    /**
      * If the requested queue could not be found
      */
     QUEUE_NOT_FOUND,

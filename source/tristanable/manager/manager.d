@@ -93,10 +93,69 @@ public class Manager
      * Stops the management of the socket, resulting
      * in ending the updating of queues and closing
      * the underlying connection
+     *
+     * Calling this will also unblock any calls that
+     * were blocking whilst doing a `dequeue()`
      */
     public void stop()
     {
+        /* Stop with the given reason */
+        stop(ErrorType.MANAGER_SHUTDOWN);
+    }
+
+    /** 
+     * Only called by the `Watcher` and for
+     * the purpose of setting a custom error
+     * type.
+     *
+     * Called when the network read fails
+     */
+    void stop_FailedWatcher()
+    {
+        /* Stop with the given reason */
+        stop(ErrorType.WATCHER_FAILED);
+    }
+
+    /** 
+     * Stops the watcher service and then
+     * unblocks all calls to `dequeue()`
+     * by shutting down each `Queue`
+     *
+     * Params:
+     *   reason = the reason for the
+     * shutdown
+     */
+    private void stop(ErrorType reason)
+    {
+        /* Stop the watcher */
         watcher.shutdown();
+
+        /* Unblock all `dequeue()` calls */
+        shutdownAllQueues(reason);
+    }
+
+    /** 
+     * Shuts down all registered queues
+     */
+    protected void shutdownAllQueues(ErrorType reason)
+    {
+        /* Lock the queue of queues */
+        queuesLock.lock();
+
+        /* On return or error */
+        scope(exit)
+        {
+            /* Unlock the queue of queues */
+            queuesLock.unlock();
+        }
+
+        // TODO: Shutdown default queue - see mtsafety
+
+        /* Shutdown each queue */
+        foreach(Queue queue; this.queues)
+        {
+            queue.shutdownQueue(reason);
+        }
     }
 
     /**
