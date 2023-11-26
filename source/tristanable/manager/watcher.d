@@ -135,6 +135,11 @@ public class Watcher : Thread
         // ... but will just try shutdown an alreayd shutdown manager
         // ... again and try shut our already-closed river stream
         // Shutdown and unblock all `dequeue()` calls
+
+        // TODO: A problem is user-initiated could cause this to trugger first and then throw
+        // ... actually with a WATCHER_FAILED - we should maybe use one error
+        // ... or find a smart way to have the right flow go off - split up calls
+        // ... more?
         this.manager.stop_FailedWatcher();
     }
 
