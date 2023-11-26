@@ -308,15 +308,15 @@ unittest
 }
 
 /**
- * Setup a server which dies (kills its connection to us)
- * midway whilst we are doing a `dequeue()`
+ * Setup a `Manager` and then block on a `dequeue()`
+ * but from another thread shutdown the `Manager`.
  *
  * This is to test the exception triggering mechanism
  * for such a case
  */
 unittest
 {
-    writeln("<<<<< Test 4 start >>>>>");
+    writeln("<<<<< Test 3 start >>>>>");
 
     Address serverAddress = parseAddress("::1", 0);
     Socket server = new Socket(AddressFamily.INET6, SocketType.STREAM, ProtocolType.TCP);
@@ -424,15 +424,15 @@ unittest
 }
 
 /**
- * Setup a `Manager` and then block on a `dequeue()`
- * but from another thread shutdown the `Manager`.
+ * Setup a server which dies (kills its connection to us)
+ * midway whilst we are doing a `dequeue()`
  *
  * This is to test the exception triggering mechanism
  * for such a case
  */
 unittest
 {
-    writeln("<<<<< Test 3 start >>>>>");
+    writeln("<<<<< Test 4 start >>>>>");
 
     Address serverAddress = parseAddress("::1", 0);
     Socket server = new Socket(AddressFamily.INET6, SocketType.STREAM, ProtocolType.TCP);
